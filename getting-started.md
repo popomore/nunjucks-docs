@@ -75,8 +75,6 @@ app.get('/', function(req, res) {
 
 上面的 API 适用于 node 端和浏览器端 (express 只适用于 node 端)，在 node 端 nunjucks 从文件系统加载模板，在浏览器端通过 http 加载模板。
 
-如果你在浏览器端[预编译](api.html#precompiling)模板，
-
 If you [precompiled](api.html#precompiling) your templates in the browser, they will
 automatically be picked up by the system and you don't have to do
 anything different. This makes it easy to use the same code in

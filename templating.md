@@ -4,45 +4,33 @@ title: Templates
 ---
 {% raw %}
 
-# Templating
+# 模板
 
-This is an overview of the templating features available in nunjucks.
+这里包括 nunjuck 所有可用的功能。
 
-> Nunjucks is essentially a port of
-> [jinja2](http://jinja.pocoo.org/docs/), so you can read their
-> [docs](http://jinja.pocoo.org/docs/templates/) if you find anything
-> lacking here. Read about the differences
-> [here](http://jlongster.github.io/nunjucks/faq.html#can-i-use-the-same-templates-between-nunjucks-and-jinja2-what-are-the-differences).
+> Nunjucks 是 [jinja2](http://jinja.pocoo.org/docs/) 的 javascript 的实现，所以如果此文档有什么缺失，你可以直接查看 [jinja2 的文档](http://jinja.pocoo.org/docs/templates/)，不过两者之间还存在一些[差异](http://jlongster.github.io/nunjucks/faq.html#can-i-use-the-same-templates-between-nunjucks-and-jinja2-what-are-the-differences)。
 
-## Variables
+## 变量
 
-A variable looks up a value from the template context. If you wanted
-to simply display a variable, you would do:
+变量会从模板上下文获取，如果你想显示一个变量可以：
 
 ```jinja
 {{ username }}
 ```
 
-This looks up `username` from the context and displays it. Variable
-names can have dots in them which lookup properties, just like
-javascript. You can also use the square bracket syntax.
+会从上下文查找 `username` 然后显示，可以像 javascript 一样获取变量的属性 (可使用点操作符或者中括号操作符)：
 
 ```jinja
 {{ foo.bar }}
 {{ foo["bar"] }}
 ```
 
-These two forms to the exact same thing, just like javascript.
+如果变量的值为 `undefined` 或 `null` 将不显示，引用到 undefined 或 null 对象也是如此 (如 `foo` 为 undefined，`{{ foo }}`, `{{
+foo.bar }}`, `{{ foo.bar.baz }}` 也不显示)。
 
-If a value is `undefined` or `null`, nothing is displayed. The same
-behavior occurs when referencing undefined or null objects. The
-following all output nothing if `foo` is undefined: `{{ foo }}`, `{{
-foo.bar }}`, `{{ foo.bar.baz }}`.
+## 过滤器
 
-## Filters
-
-Filters are essentially functions that can be applied to variables.
-They are called with a pipe operator (`|`) and can take arguments.
+过滤器是一些可以执行变量的函数，通过管道操作符 (`|`) 调用，并可接受参数。
 
 ```jinja
 {{ foo | title }}
@@ -50,20 +38,15 @@ They are called with a pipe operator (`|`) and can take arguments.
 {{ foo | replace("foo", "bar") | capitalize }}
 ```
 
-The third example shows how you can chain filters. It would display
-"Bar", by first replacing "foo" with "bar" and then capitalizing it.
+第三个例子展示了链式过滤器，最终会显示 "Bar"，第一个过滤器将 "foo" 替换成 "bar"，第二个过滤器将首字母大写。
 
-Nunjucks comes with several
-[builtin filters](#builtin-filters), and you can
-[add your own](api#Registering-custom-filters) as well.
+Nunjucks 提供了一些[内置的过滤器](#builtin-filters)，你也可以[自定义过滤器](api#Registering-custom-filters)。
 
-## Template Inheritance
+## 模板继承
 
-Template inheritance is a way to make it easy to reuse templates. When
-writing a template, you can define "blocks" that child templates can
-override. The inheritance chain can be as long as you like.
+模板继承可以达到模板复用的效果，当写一个模板的时候可以定义 "blocks"，子模板可以覆盖他，同时支持多层继承。
 
-If we have a template `parent.html` that looks like this:
+如果有一个叫做 `parent.html` 的模板，如下所示：
 
 ```jinja
 {% block header %}
@@ -81,7 +64,7 @@ This is the default content
 </section>
 ```
 
-And we render this template:
+然后再写一个模板继承他
 
 ```jinja
 {% extends "parent.html" %}
@@ -95,7 +78,7 @@ This is the right side!
 {% endblock %}
 ```
 
-The output would be:
+以下为渲染结果
 
 ```jinja
 This is the default content
@@ -109,27 +92,22 @@ This is the default content
 </section>  
 ```
 
-You can store the template to inherit in a variable and use it by
-emitting quotes. That way you can dynamically change which template is
-inherited when rendering by setting it in the context.
+你可以将继承的模板设为一个变量，这样就可以动态指定继承的模板。
 
 ```jinja
 {% extends parentTemplate %}
 ```
 
-You leverage inheritance with the [`extends`](#extends) and
-[`block`](#block) tags. A more detailed explanation of inheritance can
-be found in the [jinja2
-docs](http://jinja.pocoo.org/docs/templates/#template-inheritance).
+继承功能使用了 [`extends`](#extends) 和 [`block`](#block) 标签，[jinja2 文档](http://jinja.pocoo.org/docs/templates/#template-inheritance)中有更细节的描述。
 
-## Tags
+## 标签
 
 Tags are special blocks that perform operations on sections of the
-template. Nunjucks comes with several builtin, but [you can add your own](api.html#custom-tags).
+template. Nunjucks 包含一些内置的标签，你也可以[自定义](api.html#custom-tags)。
 
 ### if
 
-`if` tests a condition and lets you selectively display content. It behaves exactly as javascript's `if` behaves.
+`if` 为分支语句，与 javascript 中的 `if` 类似。
 
 ```jinja
 {% if variable %}
@@ -137,9 +115,7 @@ template. Nunjucks comes with several builtin, but [you can add your own](api.ht
 {% endif %}
 ```
 
-If variable is defined and evaluates to true, "It is true" will be displayed. Otherwise, nothing will be.
-
-You can specify alternate conditions with `elif` and `else`:
+如果 `variable` 定义了并且为 true _(译者注：这里并非布尔值，和 javascript 的处理是一样的)_ 则会显示 "It is true"，否则什么也不显示。
 
 ```jinja
 {% if hungry %}
@@ -151,14 +127,13 @@ You can specify alternate conditions with `elif` and `else`:
 {% endif %}
 ```
 
-You can also use if as an [inline expression](#if-expression).
+在[内联表达式](#if-expression)(inline expression)中也可以使用 if。
 
 ### for
 
-`for` iterates over arrays and dictionaries.
+`for` 可以遍历数组 (arrays) 和对象 (dictionaries)。
 
-> If you are using a custom template loader that is asynchronous, see
-> [`asyncEach`](#asynceach))
+> 如果你使用的自定义模板加载器为异步的可查看 [`asyncEach`](#asynceach)
 
 ```js
 var items = [{ title: "foo", id: 1 }, { title: "bar", id: 2}];
@@ -173,9 +148,9 @@ var items = [{ title: "foo", id: 1 }, { title: "bar", id: 2}];
 </ul>
 ```
 
-The above example lists all the posts using the `title` attribute of each item in the `items` array as the display value.
+上面的示例显示了所有文章的标题。
 
-You can also iterate over objects/hashes:
+你还可以遍历对象
 
 ```js
 var food = {
@@ -191,9 +166,9 @@ var food = {
 {% endfor %}
 ```
 
-The [`dictsort`](http://jinja.pocoo.org/docs/templates/#dictsort) filter is available for sorting objects when iterating over them (*new in 0.1.8*).
+[`dictsort`](http://jinja.pocoo.org/docs/templates/#dictsort) 过滤器可将对象排序 (*new in 0.1.8*)
 
-Additionally, nunjucks will unpack arrays into variables (*new in 0.1.8*):
+除此之外，nunjucks 会将数组解开，数组内的值对应到变量 (*new in 0.1.8*)
 
 ```js
 var points = [[0, 1, 2], [5, 6, 7], [12, 13, 14]];
@@ -205,38 +180,25 @@ var points = [[0, 1, 2], [5, 6, 7], [12, 13, 14]];
 {% endfor %}
 ```
 
-Inside loops, you have access to a few special variables:
+在循环中可获取一些特殊的变量
 
-* `loop.index`: the current iteration of the loop (1 indexed)
-* `loop.index0`: the current iteration of the loop (0 indexed)
-* `loop.revindex`: number of iterations until the end (1 indexed)
-* `loop.revindex0`: number of iterations until the end (0 based)
-* `loop.first`: boolean indicating the first iteration
-* `loop.last`: boolean indicating the last iteration
-* `loop.length`: total number of items
+* `loop.index`: 当前循环数 (1 indexed)
+* `loop.index0`: 当前循环数 (0 indexed)
+* `loop.revindex`: 当前循环数，从后往前 (1 indexed)
+* `loop.revindex0`: 当前循环数，从后往前 (0 based)
+* `loop.first`: 是否第一个
+* `loop.last`: 是否最后一个
+* `loop.length`: 总数
 
 ### asyncEach
 
-> This is only applicable to asynchronous templates. Read about
-> them [here](api.html#asynchronous-support)
+> 这个是适用于异步模板，请读[文档](api.html#asynchronous-support)。
 
-`asyncEach` is an asynchronous version of `for`. You only need this if
-you are using a [custom template loader that is
-asynchronous](#asynchronous); otherwise you will never need it. Async
-filters and extensions also need this, but internally loops are
-automatically converted into `asyncEach` if any async filters and
-extensions are used within the loop.
+`asyncEach` 为 `for` 的异步版本，只有当使用[自定义异步模板加载器](#asynchronous)的时候才使用，否则请不要使用。异步过滤器和扩展也需要他，但是一旦使用了会自动转换成 `asyncEach`。
 
-`asyncEach` has exactly the same behavior of `for`, but it enables
-asynchronous control of the loop. The reason those tags are separate
-is performance; most people use templates synchronously and it's
-much faster for `for` to compile to a straight JavaScript `for` loop.
+`asyncEach` 和 `for` 的使用方式一致，但他支持循环的异步控制。将两者区分的原因是性能，大部分人使用同步模板，将 `for` 转换成原生的 for 语句会快很多。
 
-At compile-time, nunjucks is not aware how templates are loaded so
-it's unable to determine if an `include` block is asynchronous or not.
-That's why it can't automatically convert loops for you, and you must
-use `asyncEach` for iteration if you are loading templates
-asynchronously inside the loop.
+编译时 nunjuck 不用关心模板是如何加载的，所以无法决定 `include` 是同步或异步。这也是为什么无法自动转换的原因，所以如果你使用异步模板加载器需要使用 `asyncEach`。
 
 ```js
 // If you are using a custom loader that is async, you need asyncEach
@@ -253,17 +215,11 @@ var env = new nunjucks.Environment(AsyncLoaderFromDatabase, opts);
 
 ### asyncAll
 
-> This is only applicable to asynchronous templates. Read about
-> them [here](api.html#asynchronous-support)
+> 这个是适用于异步模板，请读[文档](api.html#asynchronous-support)。
 
-`asyncAll` is similar to `asyncEach`, except it renders all the items
-in parallel, preserving the order of the items. This is only helpful
-if you are using asynchronous filters, extensions, or loaders.
-Otherwise you should never use this.
+`asyncAll` 和 `asyncEach` 类似，但 `asyncAll` 会并行的执行，每项的顺序仍然会保留。除非使用异步的过滤器、扩展或加载器，否则不要使用。
 
-Let's say you created a filter named `lookup` that fetches some text
-from a database. You could then render multiple items in parallel with
-`asyncAll`:
+如果你写了一个 `lookup` 的过滤器用来从数据库获取一些文本，使用 `asyncAll` 可以并行渲染。
 
 ```jinja
 <h1>Posts</h1>
@@ -274,15 +230,11 @@ from a database. You could then render multiple items in parallel with
 </ul>
 ```
 
-If `lookup` is an asynchronous filter, it's probably doing something
-slow like fetching something from disk. `asyncAll` allows you reduce
-the time it would take to execute the loop sequentially by doing all
-the async work in parallel, and the template rendering resumes once
-all the items are done.
+如果 `lookup` 是一个异步的过滤器，那么可能会比较慢（如从磁盘获取些数据）。`asyncAll` 会减少执行的时间，他会并行执行所有的异步操作，当所有的操作完成后才会继续渲染页面。
 
 ### macro
 
-`macro` allows you to define reusable chunks of content. It is similar to a function in a programming language. Here's an example:
+宏 (`macro`) 可以定义可复用的内容，类似与编程语言中的函数，看下面的示例：
 
 ```jinja
 {% macro field(name, value='', type='text') %}
@@ -292,20 +244,21 @@ all the items are done.
 </div>
 {% endmacro %}
 ```
-Now `field` is available to be called like a normal function:
+
+现在 `field` 可以当作函数一样使用了：
 
 ```jinja
 {{ field('user') }}
 {{ field('pass', type='password') }}
 ```
 
-Keyword/default arguments are available. See [keyword arguments](#keyword-arguments) for a more detailed explanation.
+支持[关键字参数](#keyword-arguments)，通过链接查看具体使用方式。
 
-You can [import](#import) macros from other templates, allowing you to reuse them freely across your project.
+还可以从其他模板 [import](#import) 宏，可以使宏在整个项目中复用。
 
 ### set
 
-`set` lets you create/modify a variable.
+`set` 可以设置和修改变量。
 
 ```jinja
 {{ username }}
@@ -313,40 +266,28 @@ You can [import](#import) macros from other templates, allowing you to reuse the
 {{ username }}
 ```
 
-If `username` was initially "james', this would print "james joe".
+如果 `username` 初始化的时候为 "james', 最终将显示 "james joe"。
 
-You can introduce new variables, and also set multiple at once:
+可以设置新的变量，并一起赋值。
 
 ```jinja
 {% set x, y, z = 5 %}
 ```
 
-If `set` is used at the top-level, it changes the value of the global template context. If used inside scoped blocks, like `for`, `include`, and others, it only modifies the current scope.
+如果在顶级作用域使用 `set`，将会改变全局的上下文中的值。如果只在某个作用域 (`for`、 `include` 或其他) 中使用，只会影响该作用域。
 
 ### extends
 
-`extends` is used to specify template inheritance. The specified
-template is used as a base template. See [Template
-Inheritance](#template-inheritance).
+`extends` 用来指定模板继承，被指定的模板为父级模板，查看[模板继承](#template-inheritance)。
 
 ```jinja
 {% extends "base.html" %}
 ```
 
-You can store the template to inherit in a variable and use it by
-emitting quotes. That way you can dynamically change which template is
-inherited when rendering by setting it in the context.
-
-```jinja
-{% extends parentTemplate %}
-```
-
 ### block
 
-`block` defines a section on the template and identifies it with a
-name. This is used by template inheritance. Base templates can specify
-blocks and child templates can override them with new content. See
-[Template Inheritance](#template-inheritance).
+
+区块(`block`) 定义了模板片段并标识一个名字，在模板继承中使用。父级模板可指定一个区块，子模板覆盖这个区块，查看[模板继承](#template-inheritance)。
 
 ```jinja
 {% block css %}
@@ -354,7 +295,7 @@ blocks and child templates can override them with new content. See
 {% endblock }
 ```
 
-You can even define blocks within looping:
+可以在循环中定义区块
 
 ```jinja
 {% for item in items %}
@@ -362,7 +303,7 @@ You can even define blocks within looping:
 {% endfor %}
 ```
 
-Child templates can override the `item` block and change how it is displayed:
+子模板可以覆盖 `item` 区块并改变里面的内容。
 
 ```jinja
 {% extends "item.html" %}
@@ -374,13 +315,13 @@ The name of the item is: {{ item.name }}
 
 ### include
 
-`include` pulls in other templates in place. It's useful when you need to share smaller chunks across several templates that already inherit other templates.
+`include` 可引入其他的模板，可以在多模板之间共享一些小模板，如果某个模板已使用了继承那么 `include` 将会非常有用。
 
 ```jinja
 {% include "item.html" %}
 ```
 
-You can even include templates in the middle of loops:
+可在循环中引入模板
 
 ```jinja
 {% for item in items %}
@@ -392,11 +333,11 @@ This is especially useful for cutting up templates into pieces so that the brows
 
 ### import
 
-`import` loads a different template and allows you to access its exported values. Macros and top-level assignments (done with [`set`](#set)) are exported from templates, allowing you to access them in a different template.
+`import` 可加载不同的模板，可使你操作模板输出的数据，模板将会输出宏 (macro) 和顶级作用域的赋值 (使用 [`set`](#set))。
 
-Imported templates are processed without the current context, so they do not have access to any of the current template variables.
+被 import 进来的模板没有当前模板的上下文，所以无法使用当前模板的变量，
 
-Let's start with a template called `forms.html` that has the following in it:
+创建一个叫 `forms.html` 如下所示
 
 ```jinja
 {% macro field(name, value='', type='text') %}
@@ -413,7 +354,8 @@ Let's start with a template called `forms.html` that has the following in it:
 {% endmacro %}
 ```
 
-We can import this template and bind all of its exported values to a variable so that we can use it:
+我们可以 import 这个模板并将模板的输出绑定到变量 `forms` 上，然后就可以使用这个变量了：
+
 
 ```jinja
 {% import "forms.html" as forms %}
@@ -424,7 +366,7 @@ We can import this template and bind all of its exported values to a variable so
 {{ forms.input('pass', type='password') }}
 ```
 
-You can also import specific values from a template into the current namespace with `from import`:
+也可以使用 `from import` 从模板中 import 指定的值到当前的命名空间：
 
 ```jinja
 {% from "forms.html" import input, label as description %}
@@ -437,31 +379,31 @@ You can also import specific values from a template into the current namespace w
 
 ### raw
 
-If you want to output any of the special nunjucks tags like `{{`, you can use `raw` and anything inside of it will be output as plain text.
+如果你想输出一些 nunjucks 特殊的标签 (如 `{{`)，可以使用 `raw` 使所有的内容输出为纯文本。
 
 ```jinja
 {% raw %}this will {{ not be processed }}{%{% endraw %}{% raw %} endraw %}
 ```
 
-## Keyword Arguments
+## 关键字参数
 
-jinja2 uses Python's keyword arguments support to allow keyword arguments in functions, filters, and macros. Nunjucks supports keyword arguments as well by introduction a new calling convention.
+jinja2 使用 Python 的关键字参数，支持函数，过滤器和宏。Nunjucks 会通过一个调用转换 (calling convention) 来支持。
 
-Keyword arguments look like this:
+关键字参数如下：
 
 ```jinja
 {{ foo(1, 2, bar=3, baz=4) }}
 ```
 
-`bar` and `baz` are keyword arguments. Nunjucks converts them into a hash and passes it as the last argument. It's equivalent to this call in javascript:
+`bar` 和 `baz` 为关键字参数，Nunjucks 将他们转换成一个对象作为最后一个参数传入，等价于 javascript 的如下调用：
 
 ```js
 foo(1, 2, { bar: 3, baz: 4})
 ```
 
-Since this is a standard calling convention, it works for all functions and filters if they are written to expect them. [Read more](api#Keyword-Arguments) about this in the API section.
+因为这使一个标准的调用转换，所以适用于所有的符合预期的函数和过滤器。查看 [API 章节](api#Keyword-Arguments)获得更多信息。
 
-Macros allow you to also use keyword arguments in the definition, which allows you to specify default values. Nunjucks automatically maps the keyword arguments to the ones defined with the macro.
+定义宏的时候也可以使用关键字参数，定义参数值时可设置默认值。Nunjucks 会自动将关键字参数与宏里定义的值做匹配。
 
 ```
 {% macro foo(x, y, z=5, w=6) %}
@@ -472,40 +414,40 @@ Macros allow you to also use keyword arguments in the definition, which allows y
 {{ foo(1, 2, w=10) }}  -> 1, 2, 5, 10
 ```
 
-You can mix positional and keyword arguments with macros. For example, you can specify a positional argument as a keyword argument:
+在宏中还可以混合使用位置参数 (positional arguments) 和关键字参数。如示例，你可以将位置参数用作关键字参数：
 
 ```jinja
 {{ foo(20, y=21) }}     -> 20, 21, 5, 6
 ```
 
-You can also simply pass a positional argument in place of a keyword argument:
+你还可以用位置参数来替换关键字参数：
 
 ```jinja
 {{ foo(5, 6, 7, 8) }}   -> 5, 6, 7, 8
 ```
 
-In this way, you can "skip" positional arguments:
+如下示例，你可以跳过 ("skip") 位置参数：
 
 ```jinja
 {{ foo(8, z=7) }}      -> 8, , 7, 6
 ```
 
-## Comments
+## 注释
 
-You can write comments using `{#` and `#}`. Comments are completely stripped out when rendering.
+你可以使用 `{#` and `#}` 来写注释，渲染时将会去除所有的注释。
 
 ```jinja
 {# Loop through all the users #}
 {% for user in users %}...{% endfor %}
 ```
 
-## Whitespace Control
+## 空白字符控制
 
 *Introduced in v0.1.8*
 
-Normally the template engine outputs everything outside of variable and tag blocks verbatim, with all the whitespace as it is in the file. Occasionally you don't want the extra whitespace, but you still want to format the template cleanly, which requires whitespace.
+模板在正常情况会将变量 (variable) 和标签区块 (tag blocks) 周围的空白字符完全输出。有时，你不想输出一些额外的空白字符，但代码又需要一些空白字符来显得整洁。
 
-You can tell the engine to strip all leading or trailing whitespace by adding a minus sign (`-`) to the start or end block tag.
+你可以在开始和结束区块 (start or end block tag) 添加 (`-`) 来去除前面和后面的空白字符。
 
 ```jinja
 {% for i in [1,2,3,4,5] -%}
@@ -513,7 +455,7 @@ You can tell the engine to strip all leading or trailing whitespace by adding a 
 {%- endfor %}
 ```
 
-The exact output of the above would be "12345". The `-%}` strips the whitespace right after the tag, and the `{%-` strips the whitespace right before the tag.
+上面准确的输出为 "12345"，`-%}` 会去除标签右侧的空白字符，`{%-` 会去除标签之前的空白字符。
 
 ## Expressions
 

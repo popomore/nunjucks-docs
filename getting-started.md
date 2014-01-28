@@ -3,80 +3,62 @@ layout: subpage
 pageid: getting-started
 ---
 
-# Getting Started
+# 快速上手
 
-## When Using Node...
+## Node 端使用
 
 ```
 $ npm install nunjucks
 ```
 
-Once installed, simply use `require('nunjucks')` to load it.
+下载后可直接 `require('nunjucks')` 使用
 
-## When in the Browser...
+## 浏览器端使用
 
-Grab [nunjucks.js](files/nunjucks.js) ([min](files/nunjucks.min.js)) for the full library, or
-[nunjucks-slim.js](files/nunjucks-slim.js) ([min](files/nunjucks-slim.min.js)) for the slim version
-which only works with precompiled templates.
+可直接使用 [nunjucks.js](files/nunjucks.js) ([min](files/nunjucks.min.js))，如果针对编译后的模板可使用 [nunjucks-slim.js](files/nunjucks-slim.js) ([min](files/nunjucks-slim.min.js))。
 
-### Which file should you use?
+### 你应该使用哪个文件
 
-* Use **nunjucks.js** to dynamically load templates, auto-reload
-  templates when they are changed, and use precompiled templates.
-  Comes with the full compiler so is larger (20K min/gzipped). Use
-  this to get started, and use in production if you don't mind a
-  larger file size.
+* **nunjucks.js** 可用于动态加载模板，当模板变化时重新加载，也可以用于预编译后的模板。包含编译器，所以会比较大 (20K min/gzipped)。如果你刚接触 nunjucks 可使用这个文件，如果你不在意大小也可以在生产环境使用。
+ 
+* **nunjucks-slim.js** 只能用于预编译后的模板，只包含运行时的代码，所以比较小 (8K min/gzipped)。一般用于生产环境，如果你使用 [grunt task](https://github.com/jlongster/grunt-nunjucks) 自动预编译，也可以在开发环境使用。
 
-* Use **nunjucks-slim.js** to load precompiled templates and use them. Only
-  comes with runtime so is smaller (8K min/gzipped), but *only* works with
-  precompiled templates. Typically used for production, and possibly
-  development if you use the [grunt task](https://github.com/jlongster/grunt-nunjucks) to
-  automatically recompile templates.
-
-Simply include nunjucks with a `script` tag on the page:
+直接用 `script` 引入文件：
 
 ```html
 <script src="nunjucks.js"></script>
 ```
 
-or load it as an AMD module:
+或者可以作为一个 AMD 模块加载：
 
 ```js
 define(['nunjucks'], function(nunjucks) {
 });
 ```
 
-> Whatever you do, make sure to precompile your templates in
-> production! There is a [grunt
-> task](https://github.com/jlongster/grunt-nunjucks) to help with
-> that. Read more about optimal client-side configurations in [Browser
-> Usage](api.html#browser-usage).
+> 确保在生产环境使用预编译版本，可使用 [grunt
+> task](https://github.com/jlongster/grunt-nunjucks)，可在 [浏览器使用](api.html#browser-usage) 查看客户端优化的配置。
 
-## Using
+## 使用说明
 
-This is the simplest way to use nunjucks. First, set any configuration
-flags like autoescaping and then render a string:
+这是最简单使用 nunjucks 的方式，首先设置配置项(如 autoescaping)，然后渲染一个字符串：
 
 ```js
 nunjucks.configure({ autoescape: true });
 nunjucks.renderString('Hello {% raw %}{{ username }}{% endraw %}', { username: 'James' });
 ```
 
-You usually won't use `renderString`, instead you should write
-templates in individual files and use `render`. That way you can
-inherit and include templates. In this case, you need to tell nunjucks
-where these files live with the first argument of `configure`:
+`renderString` 并不常用，而是使用 `render` 来直接渲染文件，这种方式支持继承(extends)和包含(include)模板。使用之前需要配置文件的路径：
 
 ```js
 nunjucks.configure('views', { autoescape: true });
 nunjucks.render('index.html', { foo: 'bar' });
 ```
 
-In node, `'views'` would be a path relative to the current working
-directory. In the browser, it would be a relative URL, and you
-probably want it to be absolute, like `'/views'`.
+在 node 端，`'views'` 为相对于当前工作目录 (working
+directory) 的路径。在浏览器端则为一个相对的 url，最好指定为绝对路径 (如 `'/views'`)。
 
-Using express? Simply pass your express app into `configure`:
+如果使用 express 可直接传入 `configure`：
 
 ```js
 var app = express();
@@ -91,9 +73,9 @@ app.get('/', function(req, res) {
 });
 ```
 
-The above API works in node and in the browser (express is only in
-node, obviously). In node, nunjucks loads templates from the
-filesystem by default, and in the browser loads them over HTTP.
+上面的 API 适用于 node 端和浏览器端 (express 只适用于 node 端)，在 node 端 nunjucks 从文件系统加载模板，在浏览器端通过 http 加载模板。
+
+如果你在浏览器端[预编译](api.html#precompiling)模板，
 
 If you [precompiled](api.html#precompiling) your templates in the browser, they will
 automatically be picked up by the system and you don't have to do
@@ -101,7 +83,7 @@ anything different. This makes it easy to use the same code in
 development and production, while only using precompiled templates in
 production.
 
-## More Information
+## 更多信息
 
-That's only the tip of the iceberg. See [API](api.html) for API docs
-and [Templating](templating.html) about the templating language.
+这只是冰山一角，可继续查看 [API](api.html) 文档和[模板语言](templating.html)。
+

@@ -2,7 +2,7 @@
 <html>
   <head>
     <title>Nunjucks</title>
-
+    <meta charset="utf-8" />
     <link rel="stylesheet" type="text/css"
           href="bower_components/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" type="text/css" href="css/highlight.css" />
@@ -49,16 +49,16 @@
 <a href="#">模板</a>
 <ul>
 <li>
-<a href="#variables">Variables</a>
+<a href="#1">变量</a>
 </li>
 <li>
-<a href="#filters">Filters</a>
+<a href="#2">过滤器</a>
 </li>
 <li>
-<a href="#template-inheritance">Template Inheritance</a>
+<a href="#3">模板继承</a>
 </li>
 <li>
-<a href="#tags">Tags</a>
+<a href="#4">标签</a>
 <ul>
 <li>
 <a href="#if">if</a>
@@ -154,53 +154,40 @@
   <div class="col-sm-9 main">
     <h1 id="">模板</h1>
 
-<p>This is an overview of the templating features available in nunjucks.</p>
+<p>这里包括 nunjuck 所有可用的功能。</p>
 
 <blockquote>
 <p>Nunjucks 是 <a href="http://jinja.pocoo.org/docs/">jinja2</a> 的 javascript 的实现，所以如果此文档有什么缺失，你可以直接查看 <a href="http://jinja.pocoo.org/docs/templates/">jinja2 的文档</a>，不过两者之间还存在一些<a href="http://jlongster.github.io/nunjucks/faq.html#can-i-use-the-same-templates-between-nunjucks-and-jinja2-what-are-the-differences">差异</a>。</p>
 </blockquote>
 
-<h2 id="variables">Variables</h2>
+<h2 id="1">变量</h2>
 
-<p>A variable looks up a value from the template context. If you wanted
-to simply display a variable, you would do:</p>
+<p>变量会从模板上下文获取，如果你想显示一个变量可以：</p>
 <div class="highlight"><pre><code class="jinja language-jinja" data-lang="jinja"><span class="cp">{{</span> <span class="nv">username</span> <span class="cp">}}</span><span class="x"></span>
 </code></pre></div>
-<p>This looks up <code>username</code> from the context and displays it. Variable
-names can have dots in them which lookup properties, just like
-javascript. You can also use the square bracket syntax.</p>
+<p>会从上下文查找 <code>username</code> 然后显示，可以像 javascript 一样获取变量的属性 (可使用点操作符或者中括号操作符)：</p>
 <div class="highlight"><pre><code class="jinja language-jinja" data-lang="jinja"><span class="cp">{{</span> <span class="nv">foo.bar</span> <span class="cp">}}</span><span class="x"></span>
 <span class="cp">{{</span> <span class="nv">foo</span><span class="o">[</span><span class="s2">&quot;bar&quot;</span><span class="o">]</span> <span class="cp">}}</span><span class="x"></span>
 </code></pre></div>
-<p>These two forms to the exact same thing, just like javascript.</p>
+<p>如果变量的值为 <code>undefined</code> 或 <code>null</code> 将不显示，引用到 undefined 或 null 对象也是如此 (如 <code>foo</code> 为 undefined，<code>{{ foo }}</code>, <code>{{
+foo.bar }}</code>, <code>{{ foo.bar.baz }}</code> 也不显示)。</p>
 
-<p>If a value is <code>undefined</code> or <code>null</code>, nothing is displayed. The same
-behavior occurs when referencing undefined or null objects. The
-following all output nothing if <code>foo</code> is undefined: <code>{{ foo }}</code>, <code>{{
-foo.bar }}</code>, <code>{{ foo.bar.baz }}</code>.</p>
+<h2 id="2">过滤器</h2>
 
-<h2 id="filters">Filters</h2>
-
-<p>Filters are essentially functions that can be applied to variables.
-They are called with a pipe operator (<code>|</code>) and can take arguments.</p>
+<p>过滤器是一些可以执行变量的函数，通过管道操作符 (<code>|</code>) 调用，并可接受参数。</p>
 <div class="highlight"><pre><code class="jinja language-jinja" data-lang="jinja"><span class="cp">{{</span> <span class="nv">foo</span> <span class="o">|</span> <span class="nf">title</span> <span class="cp">}}</span><span class="x"></span>
 <span class="cp">{{</span> <span class="nv">foo</span> <span class="o">|</span> <span class="nf">join</span><span class="o">(</span><span class="s2">&quot;,&quot;</span><span class="o">)</span> <span class="cp">}}</span><span class="x"></span>
 <span class="cp">{{</span> <span class="nv">foo</span> <span class="o">|</span> <span class="nf">replace</span><span class="o">(</span><span class="s2">&quot;foo&quot;</span><span class="o">,</span> <span class="s2">&quot;bar&quot;</span><span class="o">)</span> <span class="o">|</span> <span class="nf">capitalize</span> <span class="cp">}}</span><span class="x"></span>
 </code></pre></div>
-<p>The third example shows how you can chain filters. It would display
-&quot;Bar&quot;, by first replacing &quot;foo&quot; with &quot;bar&quot; and then capitalizing it.</p>
+<p>第三个例子展示了链式过滤器，最终会显示 &quot;Bar&quot;，第一个过滤器将 &quot;foo&quot; 替换成 &quot;bar&quot;，第二个过滤器将首字母大写。</p>
 
-<p>Nunjucks comes with several
-<a href="#builtin-filters">builtin filters</a>, and you can
-<a href="api#Registering-custom-filters">add your own</a> as well.</p>
+<p>Nunjucks 提供了一些<a href="#builtin-filters">内置的过滤器</a>，你也可以<a href="api#Registering-custom-filters">自定义过滤器</a>。</p>
 
-<h2 id="template-inheritance">Template Inheritance</h2>
+<h2 id="3">模板继承</h2>
 
-<p>Template inheritance is a way to make it easy to reuse templates. When
-writing a template, you can define &quot;blocks&quot; that child templates can
-override. The inheritance chain can be as long as you like.</p>
+<p>模板继承可以达到模板复用的效果，当写一个模板的时候可以定义 &quot;blocks&quot;，子模板可以覆盖他，同时支持多层继承。</p>
 
-<p>If we have a template <code>parent.html</code> that looks like this:</p>
+<p>如果有一个叫做 <code>parent.html</code> 的模板，如下所示：</p>
 <div class="highlight"><pre><code class="jinja language-jinja" data-lang="jinja"><span class="cp">{%</span> <span class="k">block</span> <span class="nv">header</span> <span class="cp">%}</span><span class="x"></span>
 <span class="x">This is the default content</span>
 <span class="cp">{%</span> <span class="k">endblock</span> <span class="cp">%}</span><span class="x"></span>
@@ -215,7 +202,7 @@ override. The inheritance chain can be as long as you like.</p>
 <span class="x">  </span><span class="cp">{%</span> <span class="k">endblock</span> <span class="cp">%}</span><span class="x"></span>
 <span class="x">&lt;/section&gt;</span>
 </code></pre></div>
-<p>And we render this template:</p>
+<p>然后再写一个模板继承他</p>
 <div class="highlight"><pre><code class="jinja language-jinja" data-lang="jinja"><span class="cp">{%</span> <span class="k">extends</span> <span class="s2">&quot;parent.html&quot;</span> <span class="cp">%}</span><span class="x"></span>
 
 <span class="cp">{%</span> <span class="k">block</span> <span class="nv">left</span> <span class="cp">%}</span><span class="x"></span>
@@ -226,7 +213,7 @@ override. The inheritance chain can be as long as you like.</p>
 <span class="x">This is the right side!</span>
 <span class="cp">{%</span> <span class="k">endblock</span> <span class="cp">%}</span><span class="x"></span>
 </code></pre></div>
-<p>The output would be:</p>
+<p>以下为渲染结果</p>
 <div class="highlight"><pre><code class="jinja language-jinja" data-lang="jinja"><span class="x">This is the default content</span>
 
 <span class="x">&lt;section class=&quot;left&quot;&gt;</span>
@@ -237,31 +224,24 @@ override. The inheritance chain can be as long as you like.</p>
 <span class="x">  This is the right side!</span>
 <span class="x">&lt;/section&gt;  </span>
 </code></pre></div>
-<p>You can store the template to inherit in a variable and use it by
-emitting quotes. That way you can dynamically change which template is
-inherited when rendering by setting it in the context.</p>
+<p>你可以将继承的模板设为一个变量，这样就可以动态指定继承的模板。</p>
 <div class="highlight"><pre><code class="jinja language-jinja" data-lang="jinja"><span class="cp">{%</span> <span class="k">extends</span> <span class="nv">parentTemplate</span> <span class="cp">%}</span><span class="x"></span>
 </code></pre></div>
-<p>You leverage inheritance with the <a href="#extends"><code>extends</code></a> and
-<a href="#block"><code>block</code></a> tags. A more detailed explanation of inheritance can
-be found in the <a href="http://jinja.pocoo.org/docs/templates/#template-inheritance">jinja2
-docs</a>.</p>
+<p>继承功能使用了 <a href="#extends"><code>extends</code></a> 和 <a href="#block"><code>block</code></a> 标签，<a href="http://jinja.pocoo.org/docs/templates/#template-inheritance">jinja2 文档</a>中有更细节的描述。</p>
 
-<h2 id="tags">Tags</h2>
+<h2 id="4">标签</h2>
 
 <p>Tags are special blocks that perform operations on sections of the
-template. Nunjucks comes with several builtin, but <a href="api.html#custom-tags">you can add your own</a>.</p>
+template. Nunjucks 包含一些内置的标签，你也可以<a href="api.html#custom-tags">自定义</a>。</p>
 
 <h3 id="if">if</h3>
 
-<p><code>if</code> tests a condition and lets you selectively display content. It behaves exactly as javascript&#39;s <code>if</code> behaves.</p>
+<p><code>if</code> 为分支语句，与 javascript 中的 <code>if</code> 类似。</p>
 <div class="highlight"><pre><code class="jinja language-jinja" data-lang="jinja"><span class="cp">{%</span> <span class="k">if</span> <span class="nv">variable</span> <span class="cp">%}</span><span class="x"></span>
 <span class="x">  It is true</span>
 <span class="cp">{%</span> <span class="k">endif</span> <span class="cp">%}</span><span class="x"></span>
 </code></pre></div>
-<p>If variable is defined and evaluates to true, &quot;It is true&quot; will be displayed. Otherwise, nothing will be.</p>
-
-<p>You can specify alternate conditions with <code>elif</code> and <code>else</code>:</p>
+<p>如果 <code>variable</code> 定义了并且为 true <em>(译者注：这里并非布尔值，和 javascript 的处理是一样的)</em> 则会显示 &quot;It is true&quot;，否则什么也不显示。</p>
 <div class="highlight"><pre><code class="jinja language-jinja" data-lang="jinja"><span class="cp">{%</span> <span class="k">if</span> <span class="nv">hungry</span> <span class="cp">%}</span><span class="x"></span>
 <span class="x">  I am hungry</span>
 <span class="cp">{%</span> <span class="k">elif</span> <span class="nv">tired</span> <span class="cp">%}</span><span class="x"></span>
@@ -270,15 +250,14 @@ template. Nunjucks comes with several builtin, but <a href="api.html#custom-tags
 <span class="x">  I am good!</span>
 <span class="cp">{%</span> <span class="k">endif</span> <span class="cp">%}</span><span class="x"></span>
 </code></pre></div>
-<p>You can also use if as an <a href="#if-expression">inline expression</a>.</p>
+<p>在<a href="#if-expression">内联表达式</a>(inline expression)中也可以使用 if。</p>
 
 <h3 id="for">for</h3>
 
-<p><code>for</code> iterates over arrays and dictionaries.</p>
+<p><code>for</code> 可以遍历数组 (arrays) 和对象 (dictionaries)。</p>
 
 <blockquote>
-<p>If you are using a custom template loader that is asynchronous, see
-<a href="#asynceach"><code>asyncEach</code></a>)</p>
+<p>如果你使用的自定义模板加载器为异步的可查看 <a href="#asynceach"><code>asyncEach</code></a></p>
 </blockquote>
 <div class="highlight"><pre><code class="js language-js" data-lang="js"><span class="kd">var</span> <span class="nx">items</span> <span class="o">=</span> <span class="p">[{</span> <span class="nx">title</span><span class="o">:</span> <span class="s2">&quot;foo&quot;</span><span class="p">,</span> <span class="nx">id</span><span class="o">:</span> <span class="mi">1</span> <span class="p">},</span> <span class="p">{</span> <span class="nx">title</span><span class="o">:</span> <span class="s2">&quot;bar&quot;</span><span class="p">,</span> <span class="nx">id</span><span class="o">:</span> <span class="mi">2</span><span class="p">}];</span>
 </code></pre></div><div class="highlight"><pre><code class="jinja language-jinja" data-lang="jinja"><span class="x">&lt;h1&gt;Posts&lt;/h1&gt;</span>
@@ -288,9 +267,9 @@ template. Nunjucks comes with several builtin, but <a href="api.html#custom-tags
 <span class="cp">{%</span> <span class="k">endfor</span> <span class="cp">%}</span><span class="x"></span>
 <span class="x">&lt;/ul&gt;</span>
 </code></pre></div>
-<p>The above example lists all the posts using the <code>title</code> attribute of each item in the <code>items</code> array as the display value.</p>
+<p>上面的示例显示了所有文章的标题。</p>
 
-<p>You can also iterate over objects/hashes:</p>
+<p>你还可以遍历对象</p>
 <div class="highlight"><pre><code class="js language-js" data-lang="js"><span class="kd">var</span> <span class="nx">food</span> <span class="o">=</span> <span class="p">{</span>
   <span class="s1">&#39;ketchup&#39;</span><span class="o">:</span> <span class="s1">&#39;5 tbsp&#39;</span><span class="p">,</span>
   <span class="s1">&#39;mustard&#39;</span><span class="o">:</span> <span class="s1">&#39;1 tbsp&#39;</span><span class="p">,</span>
@@ -300,50 +279,37 @@ template. Nunjucks comes with several builtin, but <a href="api.html#custom-tags
 <span class="x">  Use </span><span class="cp">{{</span> <span class="nv">amount</span> <span class="cp">}}</span><span class="x"> of </span><span class="cp">{{</span> <span class="nv">ingredient</span> <span class="cp">}}</span><span class="x"></span>
 <span class="cp">{%</span> <span class="k">endfor</span> <span class="cp">%}</span><span class="x"></span>
 </code></pre></div>
-<p>The <a href="http://jinja.pocoo.org/docs/templates/#dictsort"><code>dictsort</code></a> filter is available for sorting objects when iterating over them (<em>new in 0.1.8</em>).</p>
+<p><a href="http://jinja.pocoo.org/docs/templates/#dictsort"><code>dictsort</code></a> 过滤器可将对象排序 (<em>new in 0.1.8</em>)</p>
 
-<p>Additionally, nunjucks will unpack arrays into variables (<em>new in 0.1.8</em>):</p>
+<p>除此之外，nunjucks 会将数组解开，数组内的值对应到变量 (<em>new in 0.1.8</em>)</p>
 <div class="highlight"><pre><code class="js language-js" data-lang="js"><span class="kd">var</span> <span class="nx">points</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">],</span> <span class="p">[</span><span class="mi">12</span><span class="p">,</span> <span class="mi">13</span><span class="p">,</span> <span class="mi">14</span><span class="p">]];</span>
 </code></pre></div><div class="highlight"><pre><code class="jinja language-jinja" data-lang="jinja"><span class="cp">{%</span> <span class="k">for</span> <span class="nv">x</span><span class="o">,</span> <span class="nv">y</span><span class="o">,</span> <span class="nv">z</span> <span class="k">in</span> <span class="nv">points</span> <span class="cp">%}</span><span class="x"></span>
 <span class="x">  Point: </span><span class="cp">{{</span> <span class="nv">x</span> <span class="cp">}}</span><span class="x">, </span><span class="cp">{{</span> <span class="nv">y</span> <span class="cp">}}</span><span class="x">, </span><span class="cp">{{</span> <span class="nv">z</span> <span class="cp">}}</span><span class="x"></span>
 <span class="cp">{%</span> <span class="k">endfor</span> <span class="cp">%}</span><span class="x"></span>
 </code></pre></div>
-<p>Inside loops, you have access to a few special variables:</p>
+<p>在循环中可获取一些特殊的变量</p>
 
 <ul>
-<li><code>loop.index</code>: the current iteration of the loop (1 indexed)</li>
-<li><code>loop.index0</code>: the current iteration of the loop (0 indexed)</li>
-<li><code>loop.revindex</code>: number of iterations until the end (1 indexed)</li>
-<li><code>loop.revindex0</code>: number of iterations until the end (0 based)</li>
-<li><code>loop.first</code>: boolean indicating the first iteration</li>
-<li><code>loop.last</code>: boolean indicating the last iteration</li>
-<li><code>loop.length</code>: total number of items</li>
+<li><code>loop.index</code>: 当前循环数 (1 indexed)</li>
+<li><code>loop.index0</code>: 当前循环数 (0 indexed)</li>
+<li><code>loop.revindex</code>: 当前循环数，从后往前 (1 indexed)</li>
+<li><code>loop.revindex0</code>: 当前循环数，从后往前 (0 based)</li>
+<li><code>loop.first</code>: 是否第一个</li>
+<li><code>loop.last</code>: 是否最后一个</li>
+<li><code>loop.length</code>: 总数</li>
 </ul>
 
 <h3 id="asynceach">asyncEach</h3>
 
 <blockquote>
-<p>This is only applicable to asynchronous templates. Read about
-them <a href="api.html#asynchronous-support">here</a></p>
+<p>这个是适用于异步模板，请读<a href="api.html#asynchronous-support">文档</a>。</p>
 </blockquote>
 
-<p><code>asyncEach</code> is an asynchronous version of <code>for</code>. You only need this if
-you are using a <a href="#asynchronous">custom template loader that is
-asynchronous</a>; otherwise you will never need it. Async
-filters and extensions also need this, but internally loops are
-automatically converted into <code>asyncEach</code> if any async filters and
-extensions are used within the loop.</p>
+<p><code>asyncEach</code> 为 <code>for</code> 的异步版本，只有当使用<a href="#asynchronous">自定义异步模板加载器</a>的时候才使用，否则请不要使用。异步过滤器和扩展也需要他，但是一旦使用了会自动转换成 <code>asyncEach</code>。</p>
 
-<p><code>asyncEach</code> has exactly the same behavior of <code>for</code>, but it enables
-asynchronous control of the loop. The reason those tags are separate
-is performance; most people use templates synchronously and it&#39;s
-much faster for <code>for</code> to compile to a straight JavaScript <code>for</code> loop.</p>
+<p><code>asyncEach</code> 和 <code>for</code> 的使用方式一致，但他支持循环的异步控制。将两者区分的原因是性能，大部分人使用同步模板，将 <code>for</code> 转换成原生的 for 语句会快很多。</p>
 
-<p>At compile-time, nunjucks is not aware how templates are loaded so
-it&#39;s unable to determine if an <code>include</code> block is asynchronous or not.
-That&#39;s why it can&#39;t automatically convert loops for you, and you must
-use <code>asyncEach</code> for iteration if you are loading templates
-asynchronously inside the loop.</p>
+<p>编译时 nunjuck 不用关心模板是如何加载的，所以无法决定 <code>include</code> 是同步或异步。这也是为什么无法自动转换的原因，所以如果你使用异步模板加载器需要使用 <code>asyncEach</code>。</p>
 <div class="highlight"><pre><code class="js language-js" data-lang="js"><span class="c1">// If you are using a custom loader that is async, you need asyncEach</span>
 <span class="kd">var</span> <span class="nx">env</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">nunjucks</span><span class="p">.</span><span class="nx">Environment</span><span class="p">(</span><span class="nx">AsyncLoaderFromDatabase</span><span class="p">,</span> <span class="nx">opts</span><span class="p">);</span>
 </code></pre></div><div class="highlight"><pre><code class="jinja language-jinja" data-lang="jinja"><span class="x">&lt;h1&gt;Posts&lt;/h1&gt;</span>
@@ -356,14 +322,10 @@ asynchronously inside the loop.</p>
 <h3 id="asyncall">asyncAll</h3>
 
 <blockquote>
-<p>This is only applicable to asynchronous templates. Read about
-them <a href="api.html#asynchronous-support">here</a></p>
+<p>这个是适用于异步模板，请读<a href="api.html#asynchronous-support">文档</a>。</p>
 </blockquote>
 
-<p><code>asyncAll</code> is similar to <code>asyncEach</code>, except it renders all the items
-in parallel, preserving the order of the items. This is only helpful
-if you are using asynchronous filters, extensions, or loaders.
-Otherwise you should never use this.</p>
+<p><code>asyncAll</code> 和 <code>asyncEach</code> 类似，但 <code>asyncAll</code> 会并行的执行，每项的顺序仍然会保留。除非使用异步的过滤器、扩展或加载器，否则不要使用。</p>
 
 <p>Let&#39;s say you created a filter named <code>lookup</code> that fetches some text
 from a database. You could then render multiple items in parallel with

@@ -96,13 +96,13 @@
 </ul>
 </li>
 <li>
-<a href="#keyword-arguments">Keyword Arguments</a>
+<a href="#5">关键字参数</a>
 </li>
 <li>
-<a href="#comments">Comments</a>
+<a href="#6">注释</a>
 </li>
 <li>
-<a href="#whitespace-control">Whitespace Control</a>
+<a href="#7">空白字符控制</a>
 </li>
 <li>
 <a href="#expressions">Expressions</a>
@@ -327,9 +327,7 @@ template. Nunjucks 包含一些内置的标签，你也可以<a href="api.html#c
 
 <p><code>asyncAll</code> 和 <code>asyncEach</code> 类似，但 <code>asyncAll</code> 会并行的执行，每项的顺序仍然会保留。除非使用异步的过滤器、扩展或加载器，否则不要使用。</p>
 
-<p>Let&#39;s say you created a filter named <code>lookup</code> that fetches some text
-from a database. You could then render multiple items in parallel with
-<code>asyncAll</code>:</p>
+<p>如果你写了一个 <code>lookup</code> 的过滤器用来从数据库获取一些文本，使用 <code>asyncAll</code> 可以并行渲染。</p>
 <div class="highlight"><pre><code class="jinja language-jinja" data-lang="jinja"><span class="x">&lt;h1&gt;Posts&lt;/h1&gt;</span>
 <span class="x">&lt;ul&gt;</span>
 <span class="cp">{%</span> <span class="k">asyncAll</span> <span class="nv">item</span> <span class="k">in</span> <span class="nv">items</span> <span class="cp">%}</span><span class="x"></span>
@@ -337,15 +335,11 @@ from a database. You could then render multiple items in parallel with
 <span class="cp">{%</span> <span class="k">endall</span> <span class="cp">%}</span><span class="x"></span>
 <span class="x">&lt;/ul&gt;</span>
 </code></pre></div>
-<p>If <code>lookup</code> is an asynchronous filter, it&#39;s probably doing something
-slow like fetching something from disk. <code>asyncAll</code> allows you reduce
-the time it would take to execute the loop sequentially by doing all
-the async work in parallel, and the template rendering resumes once
-all the items are done.</p>
+<p>如果 <code>lookup</code> 是一个异步的过滤器，那么可能会比较慢（如从磁盘获取些数据）。<code>asyncAll</code> 会减少执行的时间，他会并行执行所有的异步操作，当所有的操作完成后才会继续渲染页面。</p>
 
 <h3 id="macro">macro</h3>
 
-<p><code>macro</code> allows you to define reusable chunks of content. It is similar to a function in a programming language. Here&#39;s an example:</p>
+<p>宏 (<code>macro</code>) 可以定义可复用的内容，类似与编程语言中的函数，看下面的示例：</p>
 <div class="highlight"><pre><code class="jinja language-jinja" data-lang="jinja"><span class="cp">{%</span> <span class="k">macro</span> <span class="nv">field</span><span class="o">(</span><span class="nv">name</span><span class="o">,</span> <span class="nv">value</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="o">,</span> <span class="nv">type</span><span class="o">=</span><span class="s1">&#39;text&#39;</span><span class="o">)</span> <span class="cp">%}</span><span class="x"></span>
 <span class="x">&lt;div class=&quot;field&quot;&gt;</span>
 <span class="x">  &lt;input type=&quot;</span><span class="cp">{{</span> <span class="nv">type</span> <span class="cp">}}</span><span class="x">&quot; name=&quot;</span><span class="cp">{{</span> <span class="nv">name</span> <span class="cp">}}</span><span class="x">&quot;</span>
@@ -353,56 +347,46 @@ all the items are done.</p>
 <span class="x">&lt;/div&gt;</span>
 <span class="cp">{%</span> <span class="k">endmacro</span> <span class="cp">%}</span><span class="x"></span>
 </code></pre></div>
-<p>Now <code>field</code> is available to be called like a normal function:</p>
+<p>现在 <code>field</code> 可以当作函数一样使用了：</p>
 <div class="highlight"><pre><code class="jinja language-jinja" data-lang="jinja"><span class="cp">{{</span> <span class="nv">field</span><span class="o">(</span><span class="s1">&#39;user&#39;</span><span class="o">)</span> <span class="cp">}}</span><span class="x"></span>
 <span class="cp">{{</span> <span class="nv">field</span><span class="o">(</span><span class="s1">&#39;pass&#39;</span><span class="o">,</span> <span class="nv">type</span><span class="o">=</span><span class="s1">&#39;password&#39;</span><span class="o">)</span> <span class="cp">}}</span><span class="x"></span>
 </code></pre></div>
-<p>Keyword/default arguments are available. See <a href="#keyword-arguments">keyword arguments</a> for a more detailed explanation.</p>
+<p>支持<a href="#keyword-arguments">关键字参数</a>，通过链接查看具体使用方式。</p>
 
-<p>You can <a href="#import">import</a> macros from other templates, allowing you to reuse them freely across your project.</p>
+<p>还可以从其他模板 <a href="#import">import</a> 宏，可以使宏在整个项目中复用。</p>
 
 <h3 id="set">set</h3>
 
-<p><code>set</code> lets you create/modify a variable.</p>
+<p><code>set</code> 可以设置和修改变量。</p>
 <div class="highlight"><pre><code class="jinja language-jinja" data-lang="jinja"><span class="cp">{{</span> <span class="nv">username</span> <span class="cp">}}</span><span class="x"></span>
 <span class="cp">{%</span> <span class="k">set</span> <span class="nv">username</span> <span class="o">=</span> <span class="s2">&quot;joe&quot;</span> <span class="cp">%}</span><span class="x"></span>
 <span class="cp">{{</span> <span class="nv">username</span> <span class="cp">}}</span><span class="x"></span>
 </code></pre></div>
-<p>If <code>username</code> was initially &quot;james&#39;, this would print &quot;james joe&quot;.</p>
+<p>如果 <code>username</code> 初始化的时候为 &quot;james&#39;, 最终将显示 &quot;james joe&quot;。</p>
 
-<p>You can introduce new variables, and also set multiple at once:</p>
+<p>可以设置新的变量，并一起赋值。</p>
 <div class="highlight"><pre><code class="jinja language-jinja" data-lang="jinja"><span class="cp">{%</span> <span class="k">set</span> <span class="nv">x</span><span class="o">,</span> <span class="nv">y</span><span class="o">,</span> <span class="nv">z</span> <span class="o">=</span> <span class="m">5</span> <span class="cp">%}</span><span class="x"></span>
 </code></pre></div>
-<p>If <code>set</code> is used at the top-level, it changes the value of the global template context. If used inside scoped blocks, like <code>for</code>, <code>include</code>, and others, it only modifies the current scope.</p>
+<p>如果在顶级作用域使用 <code>set</code>，将会改变全局的上下文中的值。如果只在某个作用域 (<code>for</code>、 <code>include</code> 或其他) 中使用，只会影响该作用域。</p>
 
 <h3 id="extends">extends</h3>
 
-<p><code>extends</code> is used to specify template inheritance. The specified
-template is used as a base template. See <a href="#template-inheritance">Template
-Inheritance</a>.</p>
+<p><code>extends</code> 用来指定模板继承，被指定的模板为父级模板，查看<a href="#template-inheritance">模板继承</a>。</p>
 <div class="highlight"><pre><code class="jinja language-jinja" data-lang="jinja"><span class="cp">{%</span> <span class="k">extends</span> <span class="s2">&quot;base.html&quot;</span> <span class="cp">%}</span><span class="x"></span>
-</code></pre></div>
-<p>You can store the template to inherit in a variable and use it by
-emitting quotes. That way you can dynamically change which template is
-inherited when rendering by setting it in the context.</p>
-<div class="highlight"><pre><code class="jinja language-jinja" data-lang="jinja"><span class="cp">{%</span> <span class="k">extends</span> <span class="nv">parentTemplate</span> <span class="cp">%}</span><span class="x"></span>
 </code></pre></div>
 <h3 id="block">block</h3>
 
-<p><code>block</code> defines a section on the template and identifies it with a
-name. This is used by template inheritance. Base templates can specify
-blocks and child templates can override them with new content. See
-<a href="#template-inheritance">Template Inheritance</a>.</p>
+<p>区块(<code>block</code>) 定义了模板片段并标识一个名字，在模板继承中使用。父级模板可指定一个区块，子模板覆盖这个区块，查看<a href="#template-inheritance">模板继承</a>。</p>
 <div class="highlight"><pre><code class="jinja language-jinja" data-lang="jinja"><span class="cp">{%</span> <span class="k">block</span> <span class="nv">css</span> <span class="cp">%}</span><span class="x"></span>
 <span class="x">&lt;link rel=&quot;stylesheet&quot; href=&quot;app.css&quot; /&gt;</span>
 <span class="cp">{%</span> <span class="k">endblock</span> <span class="o">}</span>
 </code></pre></div>
-<p>You can even define blocks within looping:</p>
+<p>可以在循环中定义区块</p>
 <div class="highlight"><pre><code class="jinja language-jinja" data-lang="jinja"><span class="cp">{%</span> <span class="k">for</span> <span class="nv">item</span> <span class="k">in</span> <span class="nv">items</span> <span class="cp">%}</span><span class="x"></span>
 <span class="cp">{%</span> <span class="k">block</span> <span class="nv">item</span> <span class="cp">%}{{</span> <span class="nv">item</span> <span class="cp">}}{%</span> <span class="k">endblock</span> <span class="cp">%}</span><span class="x"></span>
 <span class="cp">{%</span> <span class="k">endfor</span> <span class="cp">%}</span><span class="x"></span>
 </code></pre></div>
-<p>Child templates can override the <code>item</code> block and change how it is displayed:</p>
+<p>子模板可以覆盖 <code>item</code> 区块并改变里面的内容。</p>
 <div class="highlight"><pre><code class="jinja language-jinja" data-lang="jinja"><span class="cp">{%</span> <span class="k">extends</span> <span class="s2">&quot;item.html&quot;</span> <span class="cp">%}</span><span class="x"></span>
 
 <span class="cp">{%</span> <span class="k">block</span> <span class="nv">item</span> <span class="cp">%}</span><span class="x"></span>
@@ -411,10 +395,10 @@ blocks and child templates can override them with new content. See
 </code></pre></div>
 <h3 id="include">include</h3>
 
-<p><code>include</code> pulls in other templates in place. It&#39;s useful when you need to share smaller chunks across several templates that already inherit other templates.</p>
+<p><code>include</code> 可引入其他的模板，可以在多模板之间共享一些小模板，如果某个模板已使用了继承那么 <code>include</code> 将会非常有用。</p>
 <div class="highlight"><pre><code class="jinja language-jinja" data-lang="jinja"><span class="cp">{%</span> <span class="k">include</span> <span class="s2">&quot;item.html&quot;</span> <span class="cp">%}</span><span class="x"></span>
 </code></pre></div>
-<p>You can even include templates in the middle of loops:</p>
+<p>可在循环中引入模板</p>
 <div class="highlight"><pre><code class="jinja language-jinja" data-lang="jinja"><span class="cp">{%</span> <span class="k">for</span> <span class="nv">item</span> <span class="k">in</span> <span class="nv">items</span> <span class="cp">%}</span><span class="x"></span>
 <span class="cp">{%</span> <span class="k">include</span> <span class="s2">&quot;item.html&quot;</span> <span class="cp">%}</span><span class="x"></span>
 <span class="cp">{%</span> <span class="k">endfor</span> <span class="cp">%}</span><span class="x"></span>
@@ -423,11 +407,11 @@ blocks and child templates can override them with new content. See
 
 <h3 id="import">import</h3>
 
-<p><code>import</code> loads a different template and allows you to access its exported values. Macros and top-level assignments (done with <a href="#set"><code>set</code></a>) are exported from templates, allowing you to access them in a different template.</p>
+<p><code>import</code> 可加载不同的模板，可使你操作模板输出的数据，模板将会输出宏 (macro) 和顶级作用域的赋值 (使用 <a href="#set"><code>set</code></a>)。</p>
 
-<p>Imported templates are processed without the current context, so they do not have access to any of the current template variables.</p>
+<p>被 import 进来的模板没有当前模板的上下文，所以无法使用当前模板的变量，</p>
 
-<p>Let&#39;s start with a template called <code>forms.html</code> that has the following in it:</p>
+<p>创建一个叫 <code>forms.html</code> 如下所示</p>
 <div class="highlight"><pre><code class="jinja language-jinja" data-lang="jinja"><span class="cp">{%</span> <span class="k">macro</span> <span class="nv">field</span><span class="o">(</span><span class="nv">name</span><span class="o">,</span> <span class="nv">value</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="o">,</span> <span class="nv">type</span><span class="o">=</span><span class="s1">&#39;text&#39;</span><span class="o">)</span> <span class="cp">%}</span><span class="x"></span>
 <span class="x">&lt;div class=&quot;field&quot;&gt;</span>
 <span class="x">  &lt;input type=&quot;</span><span class="cp">{{</span> <span class="nv">type</span> <span class="cp">}}</span><span class="x">&quot; name=&quot;</span><span class="cp">{{</span> <span class="nv">name</span> <span class="cp">}}</span><span class="x">&quot;</span>
@@ -441,7 +425,7 @@ blocks and child templates can override them with new content. See
 <span class="x">&lt;/div&gt;</span>
 <span class="cp">{%</span> <span class="k">endmacro</span> <span class="cp">%}</span><span class="x"></span>
 </code></pre></div>
-<p>We can import this template and bind all of its exported values to a variable so that we can use it:</p>
+<p>我们可以 import 这个模板并将模板的输出绑定到变量 <code>forms</code> 上，然后就可以使用这个变量了：</p>
 <div class="highlight"><pre><code class="jinja language-jinja" data-lang="jinja"><span class="cp">{%</span> <span class="k">import</span> <span class="s2">&quot;forms.html&quot;</span> <span class="k">as</span> <span class="nv">forms</span> <span class="cp">%}</span><span class="x"></span>
 
 <span class="cp">{{</span> <span class="nv">forms.label</span><span class="o">(</span><span class="s1">&#39;Username&#39;</span><span class="o">)</span> <span class="cp">}}</span><span class="x"></span>
@@ -449,7 +433,7 @@ blocks and child templates can override them with new content. See
 <span class="cp">{{</span> <span class="nv">forms.label</span><span class="o">(</span><span class="s1">&#39;Password&#39;</span><span class="o">)</span> <span class="cp">}}</span><span class="x"></span>
 <span class="cp">{{</span> <span class="nv">forms.input</span><span class="o">(</span><span class="s1">&#39;pass&#39;</span><span class="o">,</span> <span class="nv">type</span><span class="o">=</span><span class="s1">&#39;password&#39;</span><span class="o">)</span> <span class="cp">}}</span><span class="x"></span>
 </code></pre></div>
-<p>You can also import specific values from a template into the current namespace with <code>from import</code>:</p>
+<p>也可以使用 <code>from import</code> 从模板中 import 指定的值到当前的命名空间：</p>
 <div class="highlight"><pre><code class="jinja language-jinja" data-lang="jinja"><span class="cp">{%</span> <span class="k">from</span> <span class="s2">&quot;forms.html&quot;</span> <span class="k">import</span> <span class="nv">input</span><span class="o">,</span> <span class="nv">label</span> <span class="k">as</span> <span class="nv">description</span> <span class="cp">%}</span><span class="x"></span>
 
 <span class="cp">{{</span> <span class="nv">description</span><span class="o">(</span><span class="s1">&#39;Username&#39;</span><span class="o">)</span> <span class="cp">}}</span><span class="x"></span>
@@ -459,22 +443,22 @@ blocks and child templates can override them with new content. See
 </code></pre></div>
 <h3 id="raw">raw</h3>
 
-<p>If you want to output any of the special nunjucks tags like <code>{{</code>, you can use <code>raw</code> and anything inside of it will be output as plain text.</p>
+<p>如果你想输出一些 nunjucks 特殊的标签 (如 <code>{{</code>)，可以使用 <code>raw</code> 使所有的内容输出为纯文本。</p>
 <div class="highlight"><pre><code class="jinja language-jinja" data-lang="jinja"><span class="cp">{%</span> <span class="k">raw</span> <span class="cp">%}</span>this will {{ not be processed }}{%<span class="cp">{%</span> <span class="k">endraw</span> <span class="cp">%}{%</span> <span class="k">raw</span> <span class="cp">%}</span><span class="x"> endraw %}</span>
 </code></pre></div>
-<h2 id="keyword-arguments">Keyword Arguments</h2>
+<h2 id="5">关键字参数</h2>
 
-<p>jinja2 uses Python&#39;s keyword arguments support to allow keyword arguments in functions, filters, and macros. Nunjucks supports keyword arguments as well by introduction a new calling convention.</p>
+<p>jinja2 使用 Python 的关键字参数，支持函数，过滤器和宏。Nunjucks 会通过一个调用转换 (calling convention) 来支持。</p>
 
-<p>Keyword arguments look like this:</p>
+<p>关键字参数如下：</p>
 <div class="highlight"><pre><code class="jinja language-jinja" data-lang="jinja"><span class="cp">{{</span> <span class="nv">foo</span><span class="o">(</span><span class="m">1</span><span class="o">,</span> <span class="m">2</span><span class="o">,</span> <span class="nv">bar</span><span class="o">=</span><span class="m">3</span><span class="o">,</span> <span class="nv">baz</span><span class="o">=</span><span class="m">4</span><span class="o">)</span> <span class="cp">}}</span><span class="x"></span>
 </code></pre></div>
-<p><code>bar</code> and <code>baz</code> are keyword arguments. Nunjucks converts them into a hash and passes it as the last argument. It&#39;s equivalent to this call in javascript:</p>
+<p><code>bar</code> 和 <code>baz</code> 为关键字参数，Nunjucks 将他们转换成一个对象作为最后一个参数传入，等价于 javascript 的如下调用：</p>
 <div class="highlight"><pre><code class="js language-js" data-lang="js"><span class="nx">foo</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="p">{</span> <span class="nx">bar</span><span class="o">:</span> <span class="mi">3</span><span class="p">,</span> <span class="nx">baz</span><span class="o">:</span> <span class="mi">4</span><span class="p">})</span>
 </code></pre></div>
-<p>Since this is a standard calling convention, it works for all functions and filters if they are written to expect them. <a href="api#Keyword-Arguments">Read more</a> about this in the API section.</p>
+<p>因为这使一个标准的调用转换，所以适用于所有的符合预期的函数和过滤器。查看 <a href="api#Keyword-Arguments">API 章节</a>获得更多信息。</p>
 
-<p>Macros allow you to also use keyword arguments in the definition, which allows you to specify default values. Nunjucks automatically maps the keyword arguments to the ones defined with the macro.</p>
+<p>定义宏的时候也可以使用关键字参数，定义参数值时可设置默认值。Nunjucks 会自动将关键字参数与宏里定义的值做匹配。</p>
 <div class="highlight"><pre><code class="text language-text" data-lang="text">{% macro foo(x, y, z=5, w=6) %}
 {{ x }}, {{ y }}, {{ z }}, {{ w}}
 {% endmacro %}
@@ -482,33 +466,33 @@ blocks and child templates can override them with new content. See
 {{ foo(1, 2) }}        -&gt; 1, 2, 5, 6
 {{ foo(1, 2, w=10) }}  -&gt; 1, 2, 5, 10
 </code></pre></div>
-<p>You can mix positional and keyword arguments with macros. For example, you can specify a positional argument as a keyword argument:</p>
+<p>在宏中还可以混合使用位置参数 (positional arguments) 和关键字参数。如示例，你可以将位置参数用作关键字参数：</p>
 <div class="highlight"><pre><code class="jinja language-jinja" data-lang="jinja"><span class="cp">{{</span> <span class="nv">foo</span><span class="o">(</span><span class="m">20</span><span class="o">,</span> <span class="nv">y</span><span class="o">=</span><span class="m">21</span><span class="o">)</span> <span class="cp">}}</span><span class="x">     -&gt; 20, 21, 5, 6</span>
 </code></pre></div>
-<p>You can also simply pass a positional argument in place of a keyword argument:</p>
+<p>你还可以用位置参数来替换关键字参数：</p>
 <div class="highlight"><pre><code class="jinja language-jinja" data-lang="jinja"><span class="cp">{{</span> <span class="nv">foo</span><span class="o">(</span><span class="m">5</span><span class="o">,</span> <span class="m">6</span><span class="o">,</span> <span class="m">7</span><span class="o">,</span> <span class="m">8</span><span class="o">)</span> <span class="cp">}}</span><span class="x">   -&gt; 5, 6, 7, 8</span>
 </code></pre></div>
-<p>In this way, you can &quot;skip&quot; positional arguments:</p>
+<p>如下示例，你可以跳过 (&quot;skip&quot;) 位置参数：</p>
 <div class="highlight"><pre><code class="jinja language-jinja" data-lang="jinja"><span class="cp">{{</span> <span class="nv">foo</span><span class="o">(</span><span class="m">8</span><span class="o">,</span> <span class="nv">z</span><span class="o">=</span><span class="m">7</span><span class="o">)</span> <span class="cp">}}</span><span class="x">      -&gt; 8, , 7, 6</span>
 </code></pre></div>
-<h2 id="comments">Comments</h2>
+<h2 id="6">注释</h2>
 
-<p>You can write comments using <code>{#</code> and <code>#}</code>. Comments are completely stripped out when rendering.</p>
+<p>你可以使用 <code>{#</code> and <code>#}</code> 来写注释，渲染时将会去除所有的注释。</p>
 <div class="highlight"><pre><code class="jinja language-jinja" data-lang="jinja"><span class="c">{# Loop through all the users #}</span><span class="x"></span>
 <span class="cp">{%</span> <span class="k">for</span> <span class="nv">user</span> <span class="k">in</span> <span class="nv">users</span> <span class="cp">%}</span><span class="x">...</span><span class="cp">{%</span> <span class="k">endfor</span> <span class="cp">%}</span><span class="x"></span>
 </code></pre></div>
-<h2 id="whitespace-control">Whitespace Control</h2>
+<h2 id="7">空白字符控制</h2>
 
 <p><em>Introduced in v0.1.8</em></p>
 
-<p>Normally the template engine outputs everything outside of variable and tag blocks verbatim, with all the whitespace as it is in the file. Occasionally you don&#39;t want the extra whitespace, but you still want to format the template cleanly, which requires whitespace.</p>
+<p>模板在正常情况会将变量 (variable) 和标签区块 (tag blocks) 周围的空白字符完全输出。有时，你不想输出一些额外的空白字符，但代码又需要一些空白字符来显得整洁。</p>
 
-<p>You can tell the engine to strip all leading or trailing whitespace by adding a minus sign (<code>-</code>) to the start or end block tag.</p>
+<p>你可以在开始和结束区块 (start or end block tag) 添加 (<code>-</code>) 来去除前面和后面的空白字符。</p>
 <div class="highlight"><pre><code class="jinja language-jinja" data-lang="jinja"><span class="cp">{%</span> <span class="k">for</span> <span class="nv">i</span> <span class="k">in</span> <span class="o">[</span><span class="m">1</span><span class="o">,</span><span class="m">2</span><span class="o">,</span><span class="m">3</span><span class="o">,</span><span class="m">4</span><span class="o">,</span><span class="m">5</span><span class="o">]</span> -<span class="cp">%}</span><span class="x"></span>
 <span class="x">  </span><span class="cp">{{</span> <span class="nv">i</span> <span class="cp">}}</span><span class="x"></span>
 <span class="cp">{%</span>- <span class="k">endfor</span> <span class="cp">%}</span><span class="x"></span>
 </code></pre></div>
-<p>The exact output of the above would be &quot;12345&quot;. The <code>-%}</code> strips the whitespace right after the tag, and the <code>{%-</code> strips the whitespace right before the tag.</p>
+<p>上面准确的输出为 &quot;12345&quot;，<code>-%}</code> 会去除标签右侧的空白字符，<code>{%-</code> 会去除标签之前的空白字符。</p>
 
 <h2 id="expressions">Expressions</h2>
 

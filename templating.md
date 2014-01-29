@@ -457,9 +457,9 @@ foo(1, 2, { bar: 3, baz: 4})
 
 上面准确的输出为 "12345"，`-%}` 会去除标签右侧的空白字符，`{%-` 会去除标签之前的空白字符。
 
-## Expressions
+## 表达式
 
-You can use many types of literal expressions that you are used to in javascript.
+你可以使用和 javascript 一样的[字面量](literal expressions)。
 
 * Strings: `"How are you?"`, `'How are you?'`
 * Numbers: `40`, `30.123`
@@ -467,9 +467,9 @@ You can use many types of literal expressions that you are used to in javascript
 * Dicts: `{ one: 1, two: 2 }`
 * Boolean: `true`, `false`
 
-### Math
+### 运算 (Math)
 
-Nunjucks allows you to operate on values (though it should be used sparingly, as most of your logic should be in code). The following operators are available:
+Nunjucks 支持运算 (但尽量少用，把逻辑放在代码中)，可使用以下操作符：
 
 * Addition: `+`
 * Subtraction: `-`
@@ -479,7 +479,7 @@ Nunjucks allows you to operate on values (though it should be used sparingly, as
 * Multiplication: `*`
 * Power: `**`
 
-You can use them like this:
+可以如下使用：
 
 ```jinja
 {{ 2 + 3 }}       (outputs 5)
@@ -487,7 +487,7 @@ You can use them like this:
 {{ numItems*2 }}
 ```
 
-### Comparisons
+### 比较 (Comparisons)
 
 * `==`
 * `!=`
@@ -508,7 +508,7 @@ Examples:
 * `and`
 * `or`
 * `not`
-* Use parentheses to group expressions
+* 可使用大括号来分组
 
 Examples:
 
@@ -518,51 +518,51 @@ Examples:
 {% if (x < 5 or y < 5) and foo %}...{% endif %}
 ```
 
-### If Expression
+### If 表达式
 
-Similar to javascript's ternary operator, you can use `if` as if it were an inline expression:
+和 javascript 的三元运算符 (ternary operator) 一样，可使用 if 的内联表达式：
 
 ```jinja
 {{ "true" if foo else "false" }}
 ```
 
-The above outputs the string "true" if foo is truthy, otherwise "false". This is especially useful for default values like so:
+当 foo 为 true 的时候最终输出 "true" 否则为 "false"，对于获取默认值的时候非常有用：
 
 ```jinja
 {{ baz(foo if foo else "default") }}
 ```
 
-### Function Calls
+### 函数调用 (Function Calls)
 
-If you have passed a javascript method to your template, you can call it like normal.
+如果你传入一个函数，则可以直接调用
 
 ```jinja
 {{ foo(1, 2, 3) }}
 ```
 
-## Autoescaping
+## 自动转义 (Autoescaping)
 
-If autoescaping is turned on in the environment, all output will automatically be escaped for safe output. To manually mark output as safe, use the `safe` filter. Nunjucks will not escape this output.
+如果在环境变量中设置了 autoescaping，所有的输出都会自动转义，但可以使用 `safe` 过滤器，Nunjucks 就不会转义了。
 
 ```jinja
 {{ foo }}           // &lt;span%gt;
 {{ foo | safe }}    // <span>
 ```
 
-If autoescaping is turned off, all output will be rendered as it is. You can manually escape variables with the `escape` filter.
+如果未开启 autoescaping，所有的输出都会如实输出，但可以使用 `escape` 过滤器来转义。
 
 ```jinja
 {{ foo }}           // <span>
 {{ foo | escape }}  // &lt;span&gt;
 ```
 
-## Global Functions
+## 全局函数 (Global Functions)
 
-There are a few builtin global functions that cover some common cases.
+以下为一些内置的全局函数
 
 ### range([start], stop, [step])
 
-If you need to iterate over a fixed set of numbers, `range` generates the set for you. The numbers begin at `start` (default 0) and incremeny by `step` (default 1) until it reaches `stop`, not including it.
+如果你需要遍历固定范围的数字可以使用 `range`，`start` (默认为 0) 为起始数字，`start` 为结束数字，`step` 为间隔 (默认为 1)。
 
 ```jinja
 {% for i in range(0, 5) -%}
@@ -570,11 +570,11 @@ If you need to iterate over a fixed set of numbers, `range` generates the set fo
 {%- endfor %}
 ```
 
-The above outputs `0,1,2,3,4`.
+上面输出 `0,1,2,3,4`.
 
 ### cycler(item1, item2, ...itemN)
 
-An easy way to rotate through several values is to use `cycler`, which takes any number of arguments and cycles through them.
+`cycler` 可以循环调用你指定的一系列的值。
 
 ```jinja
 {% set cls = cycler("odd", "even") %}
@@ -583,11 +583,11 @@ An easy way to rotate through several values is to use `cycler`, which takes any
 {% endfor %}
 ```
 
-In the above example, odd rows have the class "odd" and even rows have the class "even".
+上面的例子中奇数行的 class 为 "odd"，偶数行的 class 为 "even"。
 
 ### joiner([separator])
 
-When combining multiple items, it's common to want to delimit them with something like a comma, but you don't want to output the separator for the first item. The `joiner` class will output `separator` (default ",") whenever it is called except for the first time.
+当合并多项的时候，希望在他们之间又分隔符 (像逗号)，但又不希望第一项也输出。`joiner` 将输出分割符 (默认为 ",") 除了第一次调用。
 
 ```jinja
 {% set comma = joiner() %}
@@ -596,11 +596,13 @@ When combining multiple items, it's common to want to delimit them with somethin
 {%- endfor %}
 ```
 
-If `tags` was `["food", "beer", "dessert"]`, the above example would output `food, beer, dessert`.
+如果 `tags` 为 `["food", "beer", "dessert"]`, 上面将输出 `food, beer, dessert`。
 
 ## Builtin Filters
 
 Nunjucks has ported most of jinja's filters (click through for documentation):
+
+Nunjucks 已经支持了大部分 jinja 的过滤器 (点击查看文档)。
 
 * [abs](http://jinja.pocoo.org/docs/templates/#abs)
 * [batch](http://jinja.pocoo.org/docs/templates/#batch)
@@ -634,8 +636,6 @@ Nunjucks has ported most of jinja's filters (click through for documentation):
 * [float](http://jinja.pocoo.org/docs/templates/#float)
 * [int](http://jinja.pocoo.org/docs/templates/#int)
 
-Alternatively, it's easy to [read the JavaScript
-code](https://github.com/jlongster/nunjucks/blob/master/src/filters.js)
-that implements these filters.
+你也可以直接[看代码](https://github.com/jlongster/nunjucks/blob/master/src/filters.js)。
 
 {% endraw %}

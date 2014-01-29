@@ -105,30 +105,30 @@
 <a href="#7">空白字符控制</a>
 </li>
 <li>
-<a href="#expressions">Expressions</a>
+<a href="#8">表达式</a>
 <ul>
 <li>
-<a href="#math">Math</a>
+<a href="#-math">运算 (Math)</a>
 </li>
 <li>
-<a href="#comparisons">Comparisons</a>
+<a href="#-comparisons">比较 (Comparisons)</a>
 </li>
 <li>
 <a href="#logic">Logic</a>
 </li>
 <li>
-<a href="#if-expression">If Expression</a>
+<a href="#if-">If 表达式</a>
 </li>
 <li>
-<a href="#function-calls">Function Calls</a>
+<a href="#-function-calls">函数调用 (Function Calls)</a>
 </li>
 </ul>
 </li>
 <li>
-<a href="#autoescaping">Autoescaping</a>
+<a href="#-autoescaping">自动转义 (Autoescaping)</a>
 </li>
 <li>
-<a href="#global-functions">Global Functions</a>
+<a href="#-global-functions">全局函数 (Global Functions)</a>
 <ul>
 <li>
 <a href="#rangestart-stop-step">range([start], stop, [step])</a>
@@ -494,9 +494,9 @@ template. Nunjucks 包含一些内置的标签，你也可以<a href="api.html#c
 </code></pre></div>
 <p>上面准确的输出为 &quot;12345&quot;，<code>-%}</code> 会去除标签右侧的空白字符，<code>{%-</code> 会去除标签之前的空白字符。</p>
 
-<h2 id="expressions">Expressions</h2>
+<h2 id="8">表达式</h2>
 
-<p>You can use many types of literal expressions that you are used to in javascript.</p>
+<p>你可以使用和 javascript 一样的<a href="literal%20expressions">字面量</a>。</p>
 
 <ul>
 <li>Strings: <code>&quot;How are you?&quot;</code>, <code>&#39;How are you?&#39;</code></li>
@@ -506,9 +506,9 @@ template. Nunjucks 包含一些内置的标签，你也可以<a href="api.html#c
 <li>Boolean: <code>true</code>, <code>false</code></li>
 </ul>
 
-<h3 id="math">Math</h3>
+<h3 id="-math">运算 (Math)</h3>
 
-<p>Nunjucks allows you to operate on values (though it should be used sparingly, as most of your logic should be in code). The following operators are available:</p>
+<p>Nunjucks 支持运算 (但尽量少用，把逻辑放在代码中)，可使用以下操作符：</p>
 
 <ul>
 <li>Addition: <code>+</code></li>
@@ -520,12 +520,12 @@ template. Nunjucks 包含一些内置的标签，你也可以<a href="api.html#c
 <li>Power: <code>**</code></li>
 </ul>
 
-<p>You can use them like this:</p>
+<p>可以如下使用：</p>
 <div class="highlight"><pre><code class="jinja language-jinja" data-lang="jinja"><span class="cp">{{</span> <span class="m">2</span> <span class="o">+</span> <span class="m">3</span> <span class="cp">}}</span><span class="x">       (outputs 5)</span>
 <span class="cp">{{</span> <span class="m">10</span><span class="o">/</span><span class="m">5</span> <span class="cp">}}</span><span class="x">        (outputs 2)</span>
 <span class="cp">{{</span> <span class="nv">numItems</span><span class="o">*</span><span class="m">2</span> <span class="cp">}}</span><span class="x"></span>
 </code></pre></div>
-<h3 id="comparisons">Comparisons</h3>
+<h3 id="-comparisons">比较 (Comparisons)</h3>
 
 <ul>
 <li><code>==</code></li>
@@ -546,7 +546,7 @@ template. Nunjucks 包含一些内置的标签，你也可以<a href="api.html#c
 <li><code>and</code></li>
 <li><code>or</code></li>
 <li><code>not</code></li>
-<li>Use parentheses to group expressions</li>
+<li>可使用大括号来分组</li>
 </ul>
 
 <p>Examples:</p>
@@ -554,65 +554,67 @@ template. Nunjucks 包含一些内置的标签，你也可以<a href="api.html#c
 <span class="cp">{%</span> <span class="k">if</span> <span class="nv">i</span> <span class="o">==</span> <span class="m">0</span> <span class="k">and</span> <span class="k">not</span> <span class="nv">hideFirst</span> <span class="cp">%}</span><span class="x">...</span><span class="cp">{%</span> <span class="k">endif</span> <span class="cp">%}</span><span class="x"></span>
 <span class="cp">{%</span> <span class="k">if</span> <span class="o">(</span><span class="nv">x</span> <span class="o">&lt;</span> <span class="m">5</span> <span class="k">or</span> <span class="nv">y</span> <span class="o">&lt;</span> <span class="m">5</span><span class="o">)</span> <span class="k">and</span> <span class="nv">foo</span> <span class="cp">%}</span><span class="x">...</span><span class="cp">{%</span> <span class="k">endif</span> <span class="cp">%}</span><span class="x"></span>
 </code></pre></div>
-<h3 id="if-expression">If Expression</h3>
+<h3 id="if-">If 表达式</h3>
 
-<p>Similar to javascript&#39;s ternary operator, you can use <code>if</code> as if it were an inline expression:</p>
+<p>和 javascript 的三元运算符 (ternary operator) 一样，可使用 if 的内联表达式：</p>
 <div class="highlight"><pre><code class="jinja language-jinja" data-lang="jinja"><span class="cp">{{</span> <span class="s2">&quot;true&quot;</span> <span class="k">if</span> <span class="nv">foo</span> <span class="k">else</span> <span class="s2">&quot;false&quot;</span> <span class="cp">}}</span><span class="x"></span>
 </code></pre></div>
-<p>The above outputs the string &quot;true&quot; if foo is truthy, otherwise &quot;false&quot;. This is especially useful for default values like so:</p>
+<p>当 foo 为 true 的时候最终输出 &quot;true&quot; 否则为 &quot;false&quot;，对于获取默认值的时候非常有用：</p>
 <div class="highlight"><pre><code class="jinja language-jinja" data-lang="jinja"><span class="cp">{{</span> <span class="nv">baz</span><span class="o">(</span><span class="nv">foo</span> <span class="k">if</span> <span class="nv">foo</span> <span class="k">else</span> <span class="s2">&quot;default&quot;</span><span class="o">)</span> <span class="cp">}}</span><span class="x"></span>
 </code></pre></div>
-<h3 id="function-calls">Function Calls</h3>
+<h3 id="-function-calls">函数调用 (Function Calls)</h3>
 
-<p>If you have passed a javascript method to your template, you can call it like normal.</p>
+<p>如果你传入一个函数，则可以直接调用</p>
 <div class="highlight"><pre><code class="jinja language-jinja" data-lang="jinja"><span class="cp">{{</span> <span class="nv">foo</span><span class="o">(</span><span class="m">1</span><span class="o">,</span> <span class="m">2</span><span class="o">,</span> <span class="m">3</span><span class="o">)</span> <span class="cp">}}</span><span class="x"></span>
 </code></pre></div>
-<h2 id="autoescaping">Autoescaping</h2>
+<h2 id="-autoescaping">自动转义 (Autoescaping)</h2>
 
-<p>If autoescaping is turned on in the environment, all output will automatically be escaped for safe output. To manually mark output as safe, use the <code>safe</code> filter. Nunjucks will not escape this output.</p>
+<p>如果在环境变量中设置了 autoescaping，所有的输出都会自动转义，但可以使用 <code>safe</code> 过滤器，Nunjucks 就不会转义了。</p>
 <div class="highlight"><pre><code class="jinja language-jinja" data-lang="jinja"><span class="cp">{{</span> <span class="nv">foo</span> <span class="cp">}}</span><span class="x">           // &amp;lt;span%gt;</span>
 <span class="cp">{{</span> <span class="nv">foo</span> <span class="o">|</span> <span class="nf">safe</span> <span class="cp">}}</span><span class="x">    // &lt;span&gt;</span>
 </code></pre></div>
-<p>If autoescaping is turned off, all output will be rendered as it is. You can manually escape variables with the <code>escape</code> filter.</p>
+<p>如果未开启 autoescaping，所有的输出都会如实输出，但可以使用 <code>escape</code> 过滤器来转义。</p>
 <div class="highlight"><pre><code class="jinja language-jinja" data-lang="jinja"><span class="cp">{{</span> <span class="nv">foo</span> <span class="cp">}}</span><span class="x">           // &lt;span&gt;</span>
 <span class="cp">{{</span> <span class="nv">foo</span> <span class="o">|</span> <span class="nf">escape</span> <span class="cp">}}</span><span class="x">  // &amp;lt;span&amp;gt;</span>
 </code></pre></div>
-<h2 id="global-functions">Global Functions</h2>
+<h2 id="-global-functions">全局函数 (Global Functions)</h2>
 
-<p>There are a few builtin global functions that cover some common cases.</p>
+<p>以下为一些内置的全局函数</p>
 
 <h3 id="rangestart-stop-step">range([start], stop, [step])</h3>
 
-<p>If you need to iterate over a fixed set of numbers, <code>range</code> generates the set for you. The numbers begin at <code>start</code> (default 0) and incremeny by <code>step</code> (default 1) until it reaches <code>stop</code>, not including it.</p>
+<p>如果你需要遍历固定范围的数字可以使用 <code>range</code>，<code>start</code> (默认为 0) 为起始数字，<code>start</code> 为结束数字，<code>step</code> 为间隔 (默认为 1)。</p>
 <div class="highlight"><pre><code class="jinja language-jinja" data-lang="jinja"><span class="cp">{%</span> <span class="k">for</span> <span class="nv">i</span> <span class="k">in</span> <span class="nv">range</span><span class="o">(</span><span class="m">0</span><span class="o">,</span> <span class="m">5</span><span class="o">)</span> -<span class="cp">%}</span><span class="x"></span>
 <span class="x">  </span><span class="cp">{{</span> <span class="nv">i</span> <span class="cp">}}</span><span class="x">,</span>
 <span class="cp">{%</span>- <span class="k">endfor</span> <span class="cp">%}</span><span class="x"></span>
 </code></pre></div>
-<p>The above outputs <code>0,1,2,3,4</code>.</p>
+<p>上面输出 <code>0,1,2,3,4</code>.</p>
 
 <h3 id="cycleritem1-item2-itemn">cycler(item1, item2, ...itemN)</h3>
 
-<p>An easy way to rotate through several values is to use <code>cycler</code>, which takes any number of arguments and cycles through them.</p>
+<p><code>cycler</code> 可以循环调用你指定的一系列的值。</p>
 <div class="highlight"><pre><code class="jinja language-jinja" data-lang="jinja"><span class="cp">{%</span> <span class="k">set</span> <span class="nv">cls</span> <span class="o">=</span> <span class="nv">cycler</span><span class="o">(</span><span class="s2">&quot;odd&quot;</span><span class="o">,</span> <span class="s2">&quot;even&quot;</span><span class="o">)</span> <span class="cp">%}</span><span class="x"></span>
 <span class="cp">{%</span> <span class="k">for</span> <span class="nv">row</span> <span class="k">in</span> <span class="nv">rows</span> <span class="cp">%}</span><span class="x"></span>
 <span class="x">  &lt;div class=&quot;</span><span class="cp">{{</span> <span class="nv">cls.next</span><span class="o">()</span> <span class="cp">}}</span><span class="x">&quot;&gt;</span><span class="cp">{{</span> <span class="nv">row.name</span> <span class="cp">}}</span><span class="x">&lt;/div&gt;</span>
 <span class="cp">{%</span> <span class="k">endfor</span> <span class="cp">%}</span><span class="x"></span>
 </code></pre></div>
-<p>In the above example, odd rows have the class &quot;odd&quot; and even rows have the class &quot;even&quot;.</p>
+<p>上面的例子中奇数行的 class 为 &quot;odd&quot;，偶数行的 class 为 &quot;even&quot;。</p>
 
 <h3 id="joinerseparator">joiner([separator])</h3>
 
-<p>When combining multiple items, it&#39;s common to want to delimit them with something like a comma, but you don&#39;t want to output the separator for the first item. The <code>joiner</code> class will output <code>separator</code> (default &quot;,&quot;) whenever it is called except for the first time.</p>
+<p>当合并多项的时候，希望在他们之间又分隔符 (像逗号)，但又不希望第一项也输出。<code>joiner</code> 将输出分割符 (默认为 &quot;,&quot;) 除了第一次调用。</p>
 <div class="highlight"><pre><code class="jinja language-jinja" data-lang="jinja"><span class="cp">{%</span> <span class="k">set</span> <span class="nv">comma</span> <span class="o">=</span> <span class="nv">joiner</span><span class="o">()</span> <span class="cp">%}</span><span class="x"></span>
 <span class="cp">{%</span> <span class="k">for</span> <span class="nv">tag</span> <span class="k">in</span> <span class="nv">tags</span> -<span class="cp">%}</span><span class="x"></span>
 <span class="x">  </span><span class="cp">{{</span> <span class="nv">comma</span><span class="o">()</span> <span class="cp">}}</span><span class="x"> </span><span class="cp">{{</span> <span class="nv">tag</span> <span class="cp">}}</span><span class="x"></span>
 <span class="cp">{%</span>- <span class="k">endfor</span> <span class="cp">%}</span><span class="x"></span>
 </code></pre></div>
-<p>If <code>tags</code> was <code>[&quot;food&quot;, &quot;beer&quot;, &quot;dessert&quot;]</code>, the above example would output <code>food, beer, dessert</code>.</p>
+<p>如果 <code>tags</code> 为 <code>[&quot;food&quot;, &quot;beer&quot;, &quot;dessert&quot;]</code>, 上面将输出 <code>food, beer, dessert</code>。</p>
 
 <h2 id="builtin-filters">Builtin Filters</h2>
 
 <p>Nunjucks has ported most of jinja&#39;s filters (click through for documentation):</p>
+
+<p>Nunjucks 已经支持了大部分 jinja 的过滤器 (点击查看文档)。</p>
 
 <ul>
 <li><a href="http://jinja.pocoo.org/docs/templates/#abs">abs</a></li>
@@ -648,9 +650,7 @@ template. Nunjucks 包含一些内置的标签，你也可以<a href="api.html#c
 <li><a href="http://jinja.pocoo.org/docs/templates/#int">int</a></li>
 </ul>
 
-<p>Alternatively, it&#39;s easy to <a href="https://github.com/jlongster/nunjucks/blob/master/src/filters.js">read the JavaScript
-code</a>
-that implements these filters.</p>
+<p>你也可以直接<a href="https://github.com/jlongster/nunjucks/blob/master/src/filters.js">看代码</a>。</p>
 
   </div>
 </div>

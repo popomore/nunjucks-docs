@@ -6,24 +6,18 @@ title: API
 
 # API
 
-The API for nunjucks covers rendering templates, adding filters and
-extensions, customizing template loading, and more.
+Nunjucks 的 API 包括渲染模板，添加过滤器和扩展，自定义模板加载器等等。
 
 ## Simple API
 
-If you don't need deep customization of the system, you can use this simple
-higher-level API for loading and rendering templates.
+如果你不需要深度定制，可以直接使用初级(higher-level) api 来加载和渲染模板。
 
 {% endraw %}
 {% api %}
 render
 nunjucks.render(name, [context], [callback])
 
-Renders the template named **name** with the **context** hash. If
-**callback** is provided, it will be called when done with any
-possible error as the first argument and the result as the second.
-Otherwise, the result is returned from `render` and errors are thrown.
-See [asynchronous support](#asynchronous-support) for more info.
+渲染模式时需要两个参数，模板名 **name** 和数据 **context**。如果 **callback** 存在，当渲染完成后会被调用，第一个参数是错误，第二个为返回的结果；如果不存在，`render` 方法会直接返回结果，错误时会抛错。更多查看[异步的支持](#asynchronous-support)。
 
 ```js
 var res = nunjucks.render('foo.html');
@@ -39,8 +33,7 @@ nunjucks.render('async.html', function(err, res) {
 renderString
 nunjucks.renderString(str, context, [callback])
 
-Same as [`render`](#render), but renders a raw string instead of
-loading a template.
+与 [`render`](#render) 类似，只是渲染一个字符串而不是渲染加载的模板。
 
 {% raw %}
 ```js
@@ -53,26 +46,19 @@ var res = nunjucks.renderString('Hello {{ username }}', { username: 'James' });
 configure
 nunjucks.configure([path], [opts]);
 
-Tell nunjucks that your templates live at **path** and flip any
-feature on or off with the **opts** hash. You can provide both
-arguments or either of them. **path** defaults to the current working
-directory, and the following options are available in **opts**:
+传入 **path** 指定存放模板的目录，**opts** 可让某些功能开启或关闭，这两个变量都是可选的。**path** 的默认值为当前的工作目录，**opts** 提供以下功能：
 
-* **watch** *(default: true)* reload templates when they are changed
-* **express** an express app that nunjucks should install to
-* **autoescape** *(default: false)* controls if output with dangerous characters are
-    escaped automatically. See [Autoescaping](#autoescaping)
-* **tags:** *(default: see nunjucks syntax)* defines the syntax for
-    nunjucks tags. See [Customizing Syntax](#customizing-syntax)
+* **watch** *(默认值: true)* 当模板变化时重新加载
+* **express** 传入 express 实例初始化模板设置
+* **autoescape** *(默认值: false)* 控制输出是否被转义，查看 [Autoescaping](#autoescaping)
+* **tags:** *(默认值: see nunjucks syntax)* 定义模板语法，查看 [Customizing Syntax](#customizing-syntax)
 
-`configure` returns an `Environment` instance, which lets you add
-filters and extensions while still using the simple API. See below for
-more information on `Environment`.
+`configure` 返回一个 `Environment` 实例, 他提供了简单的 api 添加过滤器 (filters) 和扩展 (extensions)，可在 `Environment` 查看更多的使用方法。
 
 ```js
 nunjucks.configure('views');
 
-// if in the browser, you probably want to use an absolute URL
+// 在浏览器端最好使用绝对地址
 nunjucks.configure('/views');
 
 nunjucks.configure({ autoescape: true });
@@ -90,43 +76,24 @@ var env = nunjucks.configure('views');
 {% endapi %}
 {% raw %}
 
-That's it for the simple API! If you want total control over how
-templates are loaded, and more customization, you need to manually
-set up the system as seen below.
+就是这么简单，如果希望自己定义模板加载等更多的个性化设置，那么可以继续往下看。
 
 ## Environment
 
-The `Environment` class is the central object which handles templates.
-It knows how to load your templates, and internally templates depend
-on it for inheritance and including templates. The simple API above
-dispatches everything to an `Environment` instance that it keeps for
-you.
+`Environment` 类用来管理模板，使用他可以加载模板，模板之间可以继承和包含，上面提到的 api 都是调用了 `Environment` 的 api。
 
-You can manually handle it if you want, which allows you to specify
-custom template loaders.
+你可以根据需要来定制，比如定制模板加载。
 
 {% endraw %}
 {% api %}
 constructor
 new Environment([loaders], [opts])
 
-The constructor takes a list of **loaders** and a hash of
-configuration parameters as **opts**. If **loaders** is null, it
-defaults to loading from the current directory or URL. You can pass a
-single loader or an array of loaders. If you pass an array of loaders,
-nunjucks will walk through them in order until one of them finds a
-template. See [`Loader`](#loader) for more info about loaders.
+实例化 `Environment` 时传入两个参数，一组 **loaders** 和配置项 **opts**。如果 **loaders** 不存在，则默认从当前目录或地址加载。**loaders** 可为一个或多个，如果传入一个数组，nunjucks 会按顺序查找直到找到模板。更多查看 [`Loader`](#loader)
 
-The available flags in **opts** is **autoescape** and **tags**. Read
-more about those options in [`configure`](#configure) (the express and
-watch options are not applicable here and configured elsewhere like [`env.express`](#express)).
+**opts** 的配置有 **autoescape** and **tags**，在 [`configure`](#configure) 查看具体配置（express 和 watch 配置在这里不适用，而是在 [`env.express`](#express) 进行配置）。
 
-In node, the [`FileSystemLoader`](#filesystemloader) is available to
-load templates off the filesystem, and in the browser the [`WebLoader`](#webloader)
-is available to load over HTTP (or use precompiled templates). If you
-use the simple [`configure`](#configure) API, nunjucks automatically
-creates the appropriate loader for you, depending if your in node or
-the browser. See [`Loader`](#loader) for more information.
+在 node 端使用 [`FileSystemLoader`](#filesystemloader) 加载模板，浏览器端则使用 [`WebLoader`](#webloader) 通过 http 加载（或使用编译后的模板）。如果你使用了 [`configure`](#configure) 的 api，nunjucks 会根据平台（node 或浏览器）自动选择对应的 loader。查看更多 [`Loader`](#loader)。
 
 ```js
 // the FileSystemLoader is available if in node
@@ -147,10 +114,7 @@ var env = new Environment(new nunjucks.WebLoader('/views'));
 render
 env.render(name, [context], [callback])
 
-Render the template named **name** with the optional **context** hash.
-If **callback** is supplied, call it when done with any errors and the
-result (see [asynchronous support](#asynchronous-support)), otherwise
-return the rendered string.
+渲染名为 **name** 的模板，使用 **context** 作为数据，如果 **callback** 存在，在完成时会调用，回调有两个参数：错误和结果（ 查看 [asynchronous support](#asynchronous-support)）。如果 **callback** 不存在则直接回返结果。
 
 ```js
 var res = nunjucks.render('foo.html');
@@ -167,8 +131,7 @@ nunjucks.render('async.html', function(err, res) {
 renderString
 env.renderString(src, [context], [callback])
 
-Same as [`render`](#render1), but renders a raw string instead of
-loading a template.
+和 [`render`](#render1) 相同，只是渲染一个字符串而不是加载的模块。
 
 {% raw %}
 ```js
@@ -181,45 +144,39 @@ var res = nunjucks.render('Hello {{ username }}', { username: 'James' });
 addFilter
 env.addFilter(name, func, [async])
 
-Add a custom filter named **name** which calls **func** whenever
-invoked. If the filter needs to be async, **async** must be `true`
-(see [asynchronous support](#asynchronous-support)). See 
-[Custom Filters](#custom-filters).
+添加名为 **name** 的自定义过滤器，**func** 为调用的函数，如果过滤器需要异步的，**async** 应该为 `true` （查看 [asynchronous support](#asynchronous-support))。查看 [Custom Filters](#custom-filters)。
 
 {% endapi %}
 
 {% api %}
 getFilter
 env.getFilter(name)
-Get the filter, which is just a function, named **name**.
+
+获取过滤器，传入名字返回一个函数。
+
 {% endapi %}
 
 {% api %}
 addExtension
 env.addExtension(name, ext)
 
-Add the custom extension **ext** named **name**. **ext** is an object
-with a few specific methods that are called by the extension system.
-See [Custom Tags](#custom-tags).
+添加一个名为 **name** 的扩展，**ext** 为一个对象，并存在几个指定的方法供系统调用，查看 [Custom Tags](#custom-tags)。
 
 {% endapi %}
 
 {% api %}
 getExtension
 env.getExtension(name)
-Get an extension named **name**.
+
+获取扩展，传入名字返回一个函数。
+
 {% endapi %}
 
 {% api %}
 getTemplate
 env.getTemplate(name, [eagerCompile], [callback])
 
-Retrieve the template named **name**. If **eagerCompile** is `true`,
-compile it now instead of on render. If **callback** is supplied, call
-it with any errors and a template (if found), otherwise return
-synchronously. If using any async loaders, you must use the async API.
-The builtin loaders do not require this. See
-[asynchronous support](#asynchronous-support) and [loaders](#loader).
+获取一个名为 **name** 的模板。如果 **eagerCompile** 为 `true`，模板会立即编译而不是在渲染的时候再编译。如果 **callback** 存在会被调用，参数为错误和模板，否则会直接返回。如果使用异步加载器，则必须使用异步的 api，内置的加载器不需要。查看 [asynchronous support](#asynchronous-support) 和 [loaders](#loader)。
 
 ```js
 var tmpl = env.getTemplate('page.html');
@@ -235,10 +192,7 @@ env.getTemplate('from-async-loader.html', function(err, tmpl) {
 express
 env.express(app)
 
-Install nunjucks as the rendering engine for the express **app**.
-After doing this, you can use express normally. Note that you can do
-this automatically with the simple API call [`configure`](#configure)
-by passing in the app as the **express** option.
+使用 nunjucks 作为 express 的模板引擎，调用后可正常使用 express。你也可以调用 [`configure`](#configure)，将 app 作为 express 参数传入。
 
 ```js
 var app = express();
@@ -253,22 +207,15 @@ app.get('/', function(req, res) {
 
 ## Template
 
-A `Template` is an object that handles the compiling of template
-strings and rendering them. Usually the `Environment` handles them for
-you, but you can easily use it yourself. If you don't connect a
-template with an environment, you can't include or inherit any other
-templates.
+`Template` 是一个模板编译后的对象，然后进行渲染。通常情况下，`Environment` 已经帮你处理了，但你也可以自己进行处理。
+如果使用 `Template` 渲染模板时未指定 `Environment`，那么这个模板不支持包含 (include) 和继承 (inherit) 其他模板。
 
 {% endraw %}
 {% api %}
 constructor
 new Template(src, [env], [path], [eagerCompile])
 
-The constructor takes a template string **src**, an optional
-`Environment` instance **env** to use for loading other templates, a
-string **path** describing the location/path for debugging purposes,
-and a boolean **eagerCompile** which, if `true`, kicks off compilation
-immediately instead of waiting until the template is rendered.
+实例化 `Template` 时需要四个参数，**src** 为模板的字符串，`Environment` 的实例 **env**（可选）用来加载其他模板，**path** 为一个路径，在调试中使用，如果 **eagerCompile** 为 `true`，模板会立即编译而不是在渲染的时候再编译。
 
 {% raw %}
 ```js
@@ -284,16 +231,14 @@ tmpl.render({ username: "James" }); // -> "Hello James"
 render
 tmpl.render(context, [callback])
 
-Renders the template with the optional **context** hash. If
-**callback** is supplied, call it when done with any errors and the
-result (see [asynchronous support](#asynchronous-support)), otherwise
-return the rendered string.
+渲染模板，**context** 为数据，如果 **callback** 存在会在渲染完成后调用，参数为错误和结果 (查看 [asynchronous support](#asynchronous-support))，否则直接返回。
 
 {% endapi %}
 {% raw %}
 
 ## Loader
 
+加载器是一个对象，从资源（如文件系统或网络）中加载模板，以下为两个内置的加载器。
 A loader is an object that takes a template name and loads it from a
 source, such as the filesystem or network. The following two builtin
 loaders exist, each for different contexts.
@@ -303,12 +248,7 @@ loaders exist, each for different contexts.
 FileSystemLoader
 new FileSystemLoader([searchPaths], [noWatch])
 
-This is only available to node. It will load templates from the
-filesystem, using the **searchPaths** array as paths to look for
-templates. **searchPaths** can also be a single path for where
-templates live, and it defaults to the current working directory. If
-**noWatch** is `true`, templates are permanently cached and you won't
-see any changes; otherwise it uses `fs.watch` to watch for changes.
+只在 node 端可用，他可从文件系统中加载模板，**searchPaths** 为查找模板的路径，可以是一个也可以是多个，默认为当前的工作目录。如果 **noWatch** 为 `true`，模板会永久缓存，否则使用 `fs.watch` 来监听文件的变化。
 
 ```js
 // Loads templates from the "views" folder
@@ -321,17 +261,9 @@ var env = new nunjucks.Environment(new nunjucks.FileSystemLoader('views'));
 WebLoader
 new WebLoader([baseURL], [neverUpdate])
 
-This is only available in the browser. **baseURL** is the URL to load
-templates from (must be the same domain), and it defaults to the
-current relative directory. If **neverUpdate** is `true` templates
-will only ever be fetched once, so you won't see any updates to
-templates; the default is to load the template every time it is
-rendered.
+只在浏览器端可用，通过 **baseURL**（必须为同域）加载模板，默认为当前相对目录。如果 **neverUpdate** 为 `true`，模板只会加载一次，以后不会变化，默认每次渲染的时候都会加载。
 
-This loader also recognizes when precompiled templates are available
-and automatically uses them instead of fetching over HTTP. In
-production, this should always be the case. See
-[Precompiling Templates](#precompiling-templates).
+他还能加载预编译后的模板，自动使用这些模板而不是通过 http 获取，在生产环境应该使用预编译。查看 [Precompiling Templates](#precompiling-templates)。
 
 ```js
 // Load templates from /views

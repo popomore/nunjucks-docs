@@ -46,13 +46,13 @@
       <p><strong>FAQ</strong></p>
       <ul>
 <li>
-<a href="#questions-asked-frequently-enough">Questions Asked Frequently Enough</a>
+<a href="#">常见问题</a>
 <ul>
 <li>
-<a href="#can-i-use-nunjucks-in-node-and-the-browserclient-side">Can I use nunjucks in node and the browser/client-side?</a>
+<a href="#nunjucks--node-">nunjucks 是否可同时在 node 端和浏览器端使用?</a>
 </li>
 <li>
-<a href="#can-i-use-the-same-templates-between-nunjucks-and-jinja2-what-are-the-differences">Can I use the same templates between nunjucks and jinja2? What are the differences?</a>
+<a href="#-nunjucks--jinja2-">是否可在 nunjucks 和 jinja2 使用同一个模板？两者有什么区别？</a>
 </li>
 </ul>
 </li>
@@ -62,43 +62,33 @@
   </aside>
 
   <div class="col-sm-9 main">
-    <h1 id="questions-asked-frequently-enough">Questions Asked Frequently Enough</h1>
+    <h1 id="">常见问题</h1>
 
-<h2 id="can-i-use-nunjucks-in-node-and-the-browserclient-side">Can I use nunjucks in node and the browser/client-side?</h2>
+<h2 id="nunjucks--node-">nunjucks 是否可同时在 node 端和浏览器端使用?</h2>
 
-<p>Yes.</p>
+<p>是.</p>
 
-<h2 id="can-i-use-the-same-templates-between-nunjucks-and-jinja2-what-are-the-differences">Can I use the same templates between nunjucks and jinja2? What are the differences?</h2>
+<h2 id="-nunjucks--jinja2-">是否可在 nunjucks 和 jinja2 使用同一个模板？两者有什么区别？</h2>
 
-<p>Kind of. There are enough differences that it might take some work.
-The first problem is that nunjucks lets you access native JavaScript
-constructs, while <a href="http://jinja.pocoo.org/">jinja2</a> lets you access
-Python. This means that there are minor gotchas like the boolean
-literal being <code>true</code> in nunjucks but <code>True</code> in jinja2, and if you call
-native methods on arrays the API will be different.</p>
+<p>有一些区别。</p>
 
-<p>However, if you avoid accessing the native language features (like <code>{{ str.trim() }}</code>)
-and rely solely on filters and pure templating
-features, it should be easy to make templates compatible. In the
-<a href="https://marketplace.firefox.com/">Firefox Marketplace</a>, the devs
-actually created a compatibility layer that overrides some of nunjucks
-internals to provide better jinja2 compatiblity (allowing the use of
-<code>True</code> and more). You can <a href="https://github.com/mozilla/fireplace/blob/master/hearth/media/js/lib/nunjucks.compat.js">see it
-here</a>.</p>
+<p>首先，nunjucks 可以操作原生的 Javascript 而 <a href="http://jinja.pocoo.org/">jinja2</a> 操作的是 python，比如在 nunjucks 中布尔值为 <code>true</code> 而 jinja2 为 <code>True</code>，在调用数组原生方法的时候也不同。</p>
 
-<p>Additionally, there are few jinja2 features not implemented in nunjucks:</p>
+<p>但是，如果你避免使用原生语言的特性（如 <code>{{ str.trim() }}</code>） 而完全使用模板的特性和过滤器，那么两者的模块可以兼容。在 <a href="https://marketplace.firefox.com/">Firefox Marketplace</a> 中，开发者开发了一个兼容层来覆盖 nunjucks 的一些内部实现，能更好的兼容 jinja2（如可使用 <code>True</code>），可查看<a href="https://github.com/mozilla/fireplace/blob/master/hearth/media/js/lib/nunjucks.compat.js">源码</a>.</p>
+
+<p>除此之外，nunjucks 还有一些未实现的功能：</p>
 
 <ul>
-<li>The special <code>self</code> variable</li>
-<li><code>for</code> does not support <code>if not</code> and <code>else</code></li>
-<li><code>with context</code> modifiers don&#39;t exist</li>
-<li><code>if i is divisibleby(3)</code>-style conditionals</li>
-<li>Names block end tags: <code>{% endblock content %}</code></li>
-<li>Sandboxed mode</li>
-<li>Line statements: <code># for item in seq</code></li>
+<li><code>self</code> 变量</li>
+<li><code>for</code> 不支持 <code>if not</code> and <code>else</code></li>
+<li>不存在 <code>with context</code></li>
+<li><code>if i is divisibleby(3)</code> 式的条件判断</li>
+<li>可命名的结束区块： <code>{% endblock content %}</code></li>
+<li>沙箱模式 (Sandboxed mode)</li>
+<li>行语句： <code># for item in seq</code></li>
 </ul>
 
-<p>Lastly, any custom Python filters and extensions will have to be written in JavaScript.</p>
+<p>最后，自定义的 python 过滤器和扩展需要用 Javascript 重写。</p>
 
   </div>
 </div>
@@ -107,7 +97,7 @@ here</a>.</p>
 
     <footer>
       Found a bug in the
-      documentation? <a href="https://github.com/jlongster/nunjucks-docs">Fix
+      documentation? <a href="https://github.com/popomore/nunjucks-docs">Fix
       it or file an issue</a>!
     </footer>
 

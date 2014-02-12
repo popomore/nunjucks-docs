@@ -556,58 +556,27 @@ env.render('{{ item|lookup }}', function(err, res) {
 
 ## Custom Tags
 
-You can create more complicated extensions by creating custom tags.
-This exposes the parser API and allows you to do anything you want
-with the template.
+你可以添加更多的自定义扩展，nunjucks 提供了 parser api 可以对模板做更多的事。
 
-Note: When precompiling, **you must install the extensions at
-compile-time**. You have to use the [precompiling API](#api1) (or the
-[grunt task](https://github.com/jlongster/grunt-nunjucks)) instead of
-the script. You'll want to create a [`Environment`](#environment)
-object, install your extensions, and pass it to the precompiler.
+注意：当预编译时，**你必须在编译时添加这些扩展**，你应该使用 [precompiling API](#api1) (或者 [grunt task](https://github.com/jlongster/grunt-nunjucks))，而不是预编译脚本。你需要创建一个 [`Environment`](#environment)
+ 实例，添加扩展，传到预编译器中。
 
-An extension is a javascript object with at least two fields: `tags`
-and `parse`. Extensions basically register new tag names and take
-control of the parser when they are hit.
+一个扩展至少有两个字段 `tags` 和 `parse`，扩展注册一个标签名，如果运行到这个标签则调用 parse。
 
-`tags` is an array of tag names that the extension should handle.
-`parse` is the method that actually parses them when the template is
-compiled. Additionally, there is a special node type `CallExtension`
-that you can use to call any method on your extension at runtime. This
-is explained more below.
+`tags` 为这个扩展支持的一组标签名。`parse` 为一个函数，当编译时会解析模板。除此之外，还有一个特殊的节点名为 `CallExtension`，在运行时你可以调用本扩展的其他方法，下面会详细说明。
 
-Because you have to interact directly with the parse API and construct
-ASTs manually, this is a bit cumbersome. It's necessary if you want to
-do really complex stuff, however. Here are a few key parser methods
-you'll want to use:
+因为你需要直接使用 parse api，并且需要手动分析初 AST，所以有一点麻烦。如果你希望做一些复杂的扩展这是必须的。所以介绍一下你会用到的方法：
 
-* `parseSignature([throwErrors], [noParens])` - Parse a list of
-  arguments. By default it requires the parser to be pointing at the
-  left opening paranthesis, and parses up the right one. However, for
-  custom tags you shouldn't use parantheses, so passing `true` to the
-  second argument tells it to parse a list of arguments up until the
-  block end tag. A comma is required between arguments. Example: `{%
-  mytag foo, bar, baz=10 %}`
+* `parseSignature([throwErrors], [noParens])` - 解析标签的参数。默认情况下，解析器会从括号左边解析到括号右边。但是自定义标签不应该时括号，所以将第二个参数设为 `true` 告诉解析器解析参数直到标签关闭。参数之间应该用逗号分隔，如 `{%
+  mytag foo, bar, baz=10 %}`。
 
-* `parseUntilBlocks(names)` - Parse content up until it hits a block
-  with a name in the `names` array. This is useful for parsing content
-  between tags.
+* `parseUntilBlocks(names)` - 解析内容直到下一个名为 `names` 的标签，非常有用解析标签之间的内容。
 
-The parser API needs to be more documented, but for now read the above
-and check out the example below. You can also look at the
-[source](https://github.com/jlongster/nunjucks/blob/master/src/parser.js).
+parser API 还需要更多的文档，但现在对照上面的文档和下面的例子，你还可以看下[源码](https://github.com/jlongster/nunjucks/blob/master/src/parser.js)。
 
-The most common usage is to process the content within some tags at
-runtime. It's like filters, but on steroids because you aren't
-confined to a single expression. You basically want to lightly parse
-the template and then get a callback into your extension with the
-content. This is done with the `CallExtension` node, which takes an
-extension instance, the method to call, list of arguments parsed from
-the tag, and a list of content blocks (parsed with
-`parseUntilBlocks`).
+最常用使用的是在运行时解析标签间的内容，就像过滤器一样，但是更灵活，因为不只是局限在一个表达式中。通常情况下你会解析模板，然后将内容传入回调。你可以使用 `CallExtension`，需要传扩展的实例，方法名，解析的参数和内容（使用 `parseUntilBlocks` 解析的）。
 
-For example, here's how you would implement an extension that fetches
-content from a URL and injects it into the page:
+例如，下面实现了从远程获取内容并插入的扩展：
 
 ```js
 function RemoteExtension() {
@@ -663,7 +632,7 @@ function RemoteExtension() {
 env.addExtension('RemoteExtension', new RemoteExtension());
 ```
 
-Use it like this:
+模板可以这么写：
 
 ```jinja
 {% remote "/stuff" %}
@@ -675,12 +644,9 @@ Use it like this:
 
 ### Asynchronous
 
-Another available node is `CallExtensionAsync` which is an
-asynchronous version of `CallExtension`. It calls back into your
-extension at runtime, with an additional parameter: a callback.
-Template rendering is paused until you call the callback to resume.
+如果是异步的可以使用 `CallExtensionAsync`，在运行时扩展有一个回调作为最后一个参数，模板渲染会等待回调返回。
 
-The `run` function from the above example would now look like:
+上面例子中的 `run` 如下使用
 
 ```js
 this.run = function(context, url, body, errorBody, callback) {
